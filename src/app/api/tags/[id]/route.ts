@@ -1,0 +1,60 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { generateSlug } from "@/lib/utils";
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== "admin") {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { name } = body;
+    const slug = generateSlug(name);
+
+    const tag = await prisma.tag.update({
+      where: { id: parseInt(params.id) },
+      data: { name, slug },
+    });
+
+    return NextResponse.json({ success: true, data: tag });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: "Failed to update tag" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || (session.user as Record<string, unknown>).role !== "admin") {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    await prisma.tag.delete({ where: { id: parseInt(params.id) } });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: "Failed to delete tag" },
+      { status: 500 }
+    );
+  }
+}

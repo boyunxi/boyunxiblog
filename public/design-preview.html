@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>博云隙 · 云质感设计</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Noto Sans SC", sans-serif; background: #f0ede6; color: #333; padding: 40px 20px; }
+  h1 { text-align: center; font-family: "Noto Serif SC", serif; font-size: 28px; letter-spacing: 0.2em; color: #2a2a2a; margin-bottom: 8px; }
+  .subtitle { text-align: center; font-size: 13px; color: rgba(140,130,100,0.6); letter-spacing: 0.3em; margin-bottom: 48px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; max-width: 1200px; margin: 0 auto; }
+  @media (max-width: 900px) { .cards { grid-template-columns: 1fr; max-width: 440px; } }
+  .card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); border: 2px solid transparent; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+  .card.selected { border-color: rgba(212,175,55,0.6); box-shadow: 0 8px 32px rgba(212,175,55,0.15); }
+  .card-image { min-height: 360px; position: relative; }
+  .card-body { padding: 20px 24px 24px; }
+  .card-body h3 { font-family: "Noto Serif SC", serif; font-size: 16px; margin-bottom: 8px; color: #2a2a2a; letter-spacing: 0.1em; }
+  .card-body p { font-size: 13px; line-height: 1.7; color: #777; }
+  .badge { display: inline-block; margin-top: 12px; padding: 4px 12px; font-size: 11px; border: 1px solid rgba(212,175,55,0.3); color: rgba(160,140,80,0.7); letter-spacing: 0.1em; border-radius: 20px; }
+
+  .cloud-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.5;
+    animation: drift 8s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(8px, -4px) scale(1.03); }
+    66% { transform: translate(-4px, 6px) scale(0.97); }
+  }
+</style>
+</head>
+<body>
+
+<h1>博云隙 · 云质感设计</h1>
+<p class="subtitle">圆润 · 朦胧 · 流动 — 点击选择你偏好的</p>
+
+<div class="cards">
+
+  <!-- A: 云浮金晕 -->
+  <div class="card" onclick="this.classList.toggle('selected')">
+    <div class="card-image" style="background:linear-gradient(160deg,#faf8f3 0%,#f5f1e8 50%,#ede8da 100%);padding:32px 24px;position:relative;overflow:hidden;">
+      <div class="cloud-blob" style="width:200px;height:120px;background:rgba(212,175,55,0.12);top:10%;left:50%;animation-delay:0s;"></div>
+      <div class="cloud-blob" style="width:150px;height:100px;background:rgba(212,175,55,0.08);top:50%;right:5%;animation-delay:-3s;"></div>
+      <div class="cloud-blob" style="width:100px;height:80px;background:rgba(200,180,140,0.1);bottom:10%;left:20%;animation-delay:-5s;"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <div style="width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(212,175,55,0.3);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;background:rgba(255,255,252,0.6);backdrop-filter:blur(8px);">
+            <span style="font-family:'Noto Serif SC',serif;font-size:18px;color:rgba(180,150,80,0.7);">隙</span>
+          </div>
+          <div style="font-family:'Noto Serif SC',serif;font-size:26px;color:#2a2a2a;letter-spacing:0.2em;margin-bottom:6px;">博云隙</div>
+          <div style="font-size:10px;color:rgba(160,140,80,0.5);letter-spacing:0.4em;">云隙透光 · 笔墨留痕</div>
+        </div>
+        <div style="background:rgba(255,255,252,0.65);border-radius:14px;padding:16px;margin-bottom:10px;backdrop-filter:blur(6px);border:1px solid rgba(212,175,55,0.08);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:rgba(212,175,55,0.3);"></span>
+            <div style="width:45%;height:9px;background:rgba(180,150,80,0.12);border-radius:4px;"></div>
+          </div>
+          <div style="width:85%;height:7px;background:rgba(60,60,60,0.06);margin-bottom:4px;border-radius:4px;"></div>
+          <div style="width:60%;height:7px;background:rgba(60,60,60,0.04);border-radius:4px;"></div>
+        </div>
+        <div style="background:rgba(255,255,252,0.65);border-radius:14px;padding:16px;backdrop-filter:blur(6px);border:1px solid rgba(212,175,55,0.08);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:rgba(212,175,55,0.3);"></span>
+            <div style="width:38%;height:9px;background:rgba(180,150,80,0.12);border-radius:4px;"></div>
+          </div>
+          <div style="width:70%;height:7px;background:rgba(60,60,60,0.06);margin-bottom:4px;border-radius:4px;"></div>
+          <div style="width:50%;height:7px;background:rgba(60,60,60,0.04);border-radius:4px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · 云浮金晕</h3>
+      <p>漂浮的云团光晕作为背景，卡片圆角+毛玻璃质感。圆形印章标志，圆点装饰。云在流动，光在呼吸。</p>
+      <span class="badge">毛玻璃 · 浮云 · 呼吸</span>
+    </div>
+  </div>
+
+  <!-- B: 云卷云舒 -->
+  <div class="card" onclick="this.classList.toggle('selected')">
+    <div class="card-image" style="background:linear-gradient(180deg,#faf8f3 0%,#f2eee2 100%);padding:32px 24px;position:relative;overflow:hidden;">
+      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.15;" viewBox="0 0 400 400">
+        <ellipse cx="280" cy="80" rx="120" ry="60" fill="rgba(212,175,55,0.3)" filter="url(#cloudBlur)"/>
+        <ellipse cx="120" cy="300" rx="100" ry="50" fill="rgba(200,180,140,0.25)" filter="url(#cloudBlur)"/>
+        <defs><filter id="cloudBlur"><feGaussianBlur stdDeviation="20"/></filter></defs>
+      </svg>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));display:flex;align-items:center;justify-content:center;">
+              <span style="font-family:'Noto Serif SC',serif;font-size:12px;color:rgba(180,150,80,0.6);">隙</span>
+            </div>
+            <span style="font-family:'Noto Serif SC',serif;font-size:18px;color:#2a2a2a;letter-spacing:0.15em;">博云隙</span>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <span style="font-size:10px;color:rgba(140,130,100,0.5);letter-spacing:0.1em;padding:4px 10px;border-radius:12px;background:rgba(255,255,255,0.5);">首页</span>
+            <span style="font-size:10px;color:rgba(140,130,100,0.5);letter-spacing:0.1em;padding:4px 10px;border-radius:12px;background:rgba(255,255,255,0.5);">分类</span>
+            <span style="font-size:10px;color:rgba(140,130,100,0.5);letter-spacing:0.1em;padding:4px 10px;border-radius:12px;background:rgba(255,255,255,0.5);">关于</span>
+          </div>
+        </div>
+        <div style="text-align:center;padding:16px 0 24px;">
+          <div style="font-family:'Noto Serif SC',serif;font-size:32px;color:#2a2a2a;letter-spacing:0.25em;margin-bottom:8px;">博云隙</div>
+          <div style="display:inline-block;height:1px;width:80px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.4),transparent);vertical-align:middle;margin:0 12px;"></div>
+          <div style="font-size:10px;color:rgba(160,140,80,0.45);letter-spacing:0.4em;margin-top:8px;">云隙透光 · 落笔生花</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;background:rgba(255,255,252,0.7);border-radius:12px;padding:14px;border:1px solid rgba(212,175,55,0.06);">
+            <div style="width:100%;height:80px;border-radius:8px;background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(212,175,55,0.02));margin-bottom:8px;"></div>
+            <div style="width:50%;height:8px;background:rgba(180,150,80,0.1);margin-bottom:4px;border-radius:4px;"></div>
+            <div style="width:80%;height:6px;background:rgba(60,60,60,0.05);border-radius:3px;"></div>
+          </div>
+          <div style="flex:1;background:rgba(255,255,252,0.7);border-radius:12px;padding:14px;border:1px solid rgba(212,175,55,0.06);">
+            <div style="width:100%;height:80px;border-radius:8px;background:linear-gradient(135deg,rgba(200,180,140,0.06),rgba(200,180,140,0.02));margin-bottom:8px;"></div>
+            <div style="width:40%;height:8px;background:rgba(180,150,80,0.1);margin-bottom:4px;border-radius:4px;"></div>
+            <div style="width:65%;height:6px;background:rgba(60,60,60,0.05);border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · 云卷云舒</h3>
+      <p>圆润导航胶囊，卡片大圆角+封面图圆角。云纹SVG纹理背景，整体更现代，像云层舒展般自然。</p>
+      <span class="badge">胶囊导航 · 云纹 · 舒展</span>
+    </div>
+  </div>
+
+  <!-- C: 云隙光柱 -->
+  <div class="card" onclick="this.classList.toggle('selected')">
+    <div class="card-image" style="background:#f7f5f0;padding:32px 24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-30%;left:30%;width:40%;height:120%;background:linear-gradient(180deg,rgba(212,175,55,0.1) 0%,rgba(212,175,55,0.03) 40%,transparent 80%);border-radius:50%;filter:blur(30px);"></div>
+      <div style="position:absolute;top:20%;right:-5%;width:30%;height:60%;background:radial-gradient(ellipse,rgba(212,175,55,0.06) 0%,transparent 70%);border-radius:50%;filter:blur(20px);"></div>
+      <div style="position:relative;z-index:1;">
+        <div style="text-align:center;margin-bottom:28px;">
+          <div style="position:relative;display:inline-block;">
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.12),rgba(212,175,55,0.04));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 4px 20px rgba(212,175,55,0.08);">
+              <span style="font-family:'Noto Serif SC',serif;font-size:22px;color:rgba(160,140,80,0.6);">隙</span>
+            </div>
+            <div style="position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:rgba(212,175,55,0.25);"></div>
+          </div>
+          <div style="font-family:'Noto Serif SC',serif;font-size:26px;color:#2a2a2a;letter-spacing:0.2em;margin-bottom:6px;">博云隙</div>
+          <div style="font-size:10px;color:rgba(160,140,80,0.45);letter-spacing:0.4em;">云隙透光 · 笔墨留痕</div>
+        </div>
+        <div style="background:rgba(255,255,252,0.6);border-radius:16px;padding:18px;margin-bottom:10px;backdrop-filter:blur(8px);border:1px solid rgba(212,175,55,0.06);box-shadow:0 2px 16px rgba(212,175,55,0.04);">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+            <span style="padding:2px 8px;border-radius:10px;background:rgba(212,175,55,0.08);font-size:9px;color:rgba(160,140,80,0.6);letter-spacing:0.05em;">随笔</span>
+            <span style="font-size:9px;color:rgba(140,130,100,0.4);">3分钟</span>
+          </div>
+          <div style="width:55%;height:9px;background:rgba(50,50,50,0.08);margin-bottom:6px;border-radius:4px;"></div>
+          <div style="width:85%;height:7px;background:rgba(60,60,60,0.04);margin-bottom:3px;border-radius:4px;"></div>
+          <div style="width:40%;height:7px;background:rgba(60,60,60,0.03);border-radius:4px;"></div>
+        </div>
+        <div style="background:rgba(255,255,252,0.6);border-radius:16px;padding:18px;backdrop-filter:blur(8px);border:1px solid rgba(212,175,55,0.06);box-shadow:0 2px 16px rgba(212,175,55,0.04);">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+            <span style="padding:2px 8px;border-radius:10px;background:rgba(212,175,55,0.08);font-size:9px;color:rgba(160,140,80,0.6);letter-spacing:0.05em;">技术</span>
+            <span style="font-size:9px;color:rgba(140,130,100,0.4);">5分钟</span>
+          </div>
+          <div style="width:48%;height:9px;background:rgba(50,50,50,0.08);margin-bottom:6px;border-radius:4px;"></div>
+          <div style="width:70%;height:7px;background:rgba(60,60,60,0.04);margin-bottom:3px;border-radius:4px;"></div>
+          <div style="width:35%;height:7px;background:rgba(60,60,60,0.03);border-radius:4px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · 云隙光柱</h3>
+      <p>从上方倾泻的光柱效果，圆形头像+圆角标签胶囊。卡片大圆角+毛玻璃+金边阴影，最精致的高级感。</p>
+      <span class="badge">光柱 · 胶囊标签 · 精致</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
