@@ -1,0 +1,214 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap");
+
+@layer base {
+  :root {
+    --gold: #D4AF37;
+    --gold-faint: rgba(212,175,55,0.12);
+    --mist: #FAF8F3;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-mist text-ink-muted font-sans;
+  }
+
+  ::selection {
+    background: rgba(212, 175, 55, 0.15);
+    color: #2A2A2A;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.2);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.4);
+  }
+}
+
+@layer components {
+  .cloud-card {
+    @apply relative overflow-hidden rounded-cloud;
+    background: rgba(255, 255, 252, 0.65);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(212, 175, 55, 0.06);
+    box-shadow: 0 2px 16px rgba(212, 175, 55, 0.04);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cloud-card:hover {
+    box-shadow: 0 4px 24px rgba(212, 175, 55, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .cloud-tag {
+    @apply inline-flex items-center justify-center text-gold font-serif relative overflow-hidden;
+    padding: 2px 10px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    border-radius: 10px;
+    background: rgba(212, 175, 55, 0.08);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cloud-tag:hover {
+    background: rgba(212, 175, 55, 0.15);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1);
+  }
+
+  .cloud-divider {
+    @apply relative w-full my-8;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(212, 175, 55, 0.15) 15%,
+      rgba(212, 175, 55, 0.3) 50%,
+      rgba(212, 175, 55, 0.15) 85%,
+      transparent 100%
+    );
+  }
+
+  .cloud-divider::before {
+    content: "";
+    @apply absolute left-1/2 -translate-x-1/2;
+    top: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.3);
+  }
+
+  .cloud-blob {
+    @apply absolute rounded-full pointer-events-none;
+    filter: blur(40px);
+    opacity: 0.5;
+  }
+
+  .reading-progress {
+    @apply fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left;
+    background: linear-gradient(90deg, var(--gold), rgba(212,175,55,0.4), var(--gold));
+  }
+
+  .back-to-top {
+    @apply fixed bottom-8 right-8 z-50 w-10 h-10 flex items-center justify-center rounded-full;
+    background: rgba(255, 255, 252, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    box-shadow: 0 2px 12px rgba(212, 175, 55, 0.06);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .back-to-top:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .prose-custom {
+    @apply text-ink-muted text-[15px];
+    line-height: 1.9;
+  }
+
+  .prose-custom p {
+    @apply mb-5;
+    text-indent: 2em;
+  }
+
+  .prose-custom h2 {
+    @apply font-serif text-ink text-xl mt-10 mb-4 pb-2;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  .prose-custom h3 {
+    @apply font-serif text-ink text-lg mt-8 mb-3;
+  }
+
+  .prose-custom blockquote {
+    @apply pl-5 my-6 italic;
+    border-left: 2px solid rgba(212, 175, 55, 0.3);
+    color: rgba(107, 107, 107, 0.8);
+  }
+
+  .prose-custom code {
+    @apply px-1.5 py-0.5 text-sm font-mono text-gold-dark;
+    background: rgba(212, 175, 55, 0.06);
+    border-radius: 4px;
+  }
+
+  .prose-custom pre {
+    @apply p-5 my-6 overflow-x-auto text-sm rounded-cloud;
+    background-color: #1a1a1a;
+    color: rgba(250, 248, 243, 0.85);
+    line-height: 1.625;
+  }
+
+  .prose-custom pre code {
+    @apply bg-transparent p-0;
+    color: rgba(250, 248, 243, 0.85);
+    border-radius: 0;
+  }
+
+  .prose-custom img {
+    @apply my-8 rounded-cloud;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.06);
+  }
+
+  .prose-custom a {
+    @apply text-ink-light underline transition-colors;
+    text-decoration-color: rgba(212, 175, 55, 0.3);
+    text-underline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .prose-custom a:hover {
+    text-decoration-color: var(--gold);
+  }
+
+  .prose-custom ul, .prose-custom ol {
+    @apply my-4 pl-6;
+  }
+
+  .prose-custom li {
+    @apply mb-2;
+  }
+
+  .prose-custom hr {
+    @apply my-10 border-0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
