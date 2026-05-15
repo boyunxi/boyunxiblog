@@ -1,33 +1,15 @@
-import CloudTag from "../ui/SealTag";
+import Link from "next/link";
 
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-}
+interface Category { id: number; name: string; slug: string; postCount?: number; }
 
-interface CategoryNavProps {
-  categories: Category[];
-  activeSlug?: string;
-}
-
-export default function CategoryNav({ categories, activeSlug }: CategoryNavProps) {
+export default function CategoryNav({ categories }: { categories: Category[] }) {
   return (
-    <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-      <CloudTag
-        text="全部"
-        href="/"
-        small
-        active={!activeSlug}
-      />
+    <div className="flex flex-wrap justify-center gap-3">
       {categories.map((cat) => (
-        <CloudTag
-          key={cat.id}
-          text={cat.name}
-          href={`/categories/${cat.slug}`}
-          small
-          active={activeSlug === cat.slug}
-        />
+        <Link key={cat.id} href={`/categories/${cat.slug}`} className="gold-tag">
+          {cat.name}
+          {cat.postCount !== undefined && <span className="text-pale-ghost ml-1 text-[10px]">({cat.postCount})</span>}
+        </Link>
       ))}
     </div>
   );

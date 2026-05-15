@@ -1,13 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { transformPost } from "@/lib/types";
-import PostList from "@/components/frontend/PostList";
-import CloudDivider from "@/components/ui/InkDivider";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-export default async function CategoryPage({
-  params,
-}: {
-  params: { name: string };
-}) {
+export default async function CategoryPage({ params }: { params: { name: string } }) {
   const category = await prisma.category.findUnique({
     where: { slug: params.name },
     include: {
@@ -21,11 +17,9 @@ export default async function CategoryPage({
 
   if (!category) {
     return (
-      <div className="text-center py-24">
-        <div className="relative inline-block mb-6">
-          <span className="font-display text-7xl text-ink/5">无</span>
-        </div>
-        <p className="font-serif text-ink-muted tracking-wider">该分类不存在</p>
+      <div className="text-center py-32">
+        <div className="rift-line mx-auto animate-gold-breathe mb-8" />
+        <p className="text-pale-ghost font-serif tracking-[0.3em] text-xs">此入口尚无卷宗</p>
       </div>
     );
   }
@@ -33,32 +27,48 @@ export default async function CategoryPage({
   const posts = category.posts.map(transformPost);
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <header className="text-center mb-14">
-        <div
-          className="flex items-center justify-center gap-4 mb-6 opacity-0 animate-fade-in"
-          style={{ animationDelay: "0.1s" }}
-        >
-          <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/40" />
-          <span className="w-1.5 h-1.5 rounded-full bg-gold/40" />
-          <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/40" />
-        </div>
-        <span className="text-gold/40 text-xs font-serif tracking-[0.3em] block mb-3 opacity-0 animate-fade-up" style={{ animationDelay: "0.15s" }}>分类</span>
-        <h1 className="font-display text-4xl text-ink tracking-wider mb-4 opacity-0 animate-fade-up" style={{ animationDelay: "0.2s" }}>{category.name}</h1>
-        <CloudDivider />
-      </header>
+    <div className="relative">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[25%] right-[20%] w-[350px] h-[200px] rounded-full bg-gold/[0.015] blur-[80px] animate-fog-drift" />
+      </div>
 
-      {posts.length > 0 ? (
-        <PostList posts={posts} />
-      ) : (
-        <div className="text-center py-24">
-          <div className="relative inline-block mb-6">
-            <span className="font-display text-7xl text-ink/5">云</span>
-            <span className="absolute inset-0 flex items-center justify-center font-display text-7xl text-ink/10 animate-gold-breathe">云</span>
-          </div>
-          <p className="font-serif text-ink-muted tracking-wider">该分类暂无文章</p>
+      <div className="max-w-3xl mx-auto px-6 py-16 relative z-10">
+        <header className="text-center mb-20">
+          <div className="rift-line animate-rift-glow mb-10" />
+          <span className="text-pale-ghost text-[10px] tracking-[0.5em] font-serif block mb-4">世界入口</span>
+          <h1 className="font-serif text-3xl text-pale tracking-[0.2em] gold-text-glow">{category.name}</h1>
+          <div className="rift-line animate-rift-glow mt-10" style={{ animationDelay: "-2s" }} />
+        </header>
+
+        <div className="space-y-4">
+          {posts.map((post: any) => (
+            <Link
+              key={post.id}
+              href={`/posts/${post.slug}`}
+              className="scroll-vessel incomplete-border block p-6"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-serif text-pale text-base tracking-wider mb-2 hover:text-gold-light transition-colors duration-500">
+                    {post.title}
+                  </h2>
+                  {post.excerpt && (
+                    <p className="text-pale-muted text-sm line-clamp-2">{post.excerpt}</p>
+                  )}
+                </div>
+                <ArrowRight size={12} className="text-pale-ghost shrink-0" />
+              </div>
+            </Link>
+          ))}
         </div>
-      )}
+
+        {posts.length === 0 && (
+          <div className="text-center py-20">
+            <div className="rift-line mx-auto animate-gold-breathe mb-8" />
+            <p className="text-pale-ghost font-serif tracking-[0.3em] text-xs">此入口尚无卷宗</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
