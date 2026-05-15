@@ -11,10 +11,10 @@ export default function FrontendLayout({
 }) {
   return (
     <Providers>
-      <div className="bg-mist font-sans min-h-screen flex flex-col">
+      <div className="bg-void font-sans min-h-screen flex flex-col">
         <ReadingProgress />
         <Header />
-        <main className="flex-1 min-h-screen max-w-6xl mx-auto w-full px-4 py-8">
+        <main className="flex-1 min-h-screen">
           {children}
         </main>
         <Footer />
