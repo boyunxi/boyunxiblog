@@ -6,7 +6,6 @@ import { Search } from "lucide-react";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
-  const [focused, setFocused] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (e: FormEvent) => {
@@ -17,22 +16,17 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative w-full group">
+    <form onSubmit={handleSubmit} className="relative w-full">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
         placeholder="寻章摘句..."
-        className="w-full bg-transparent border-b-2 border-ink/10 font-serif text-ink placeholder:text-ink-faint/30 py-3 pr-10 focus:outline-none transition-colors duration-500 focus:border-gold"
-      />
-      <span
-        className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gold transition-all duration-500 ${focused ? "w-full" : "w-0"}`}
+        className="w-full bg-transparent border-b border-gold/10 font-serif text-pale placeholder:text-pale-ghost py-3 pr-10 focus:outline-none transition-colors duration-500 focus:border-gold/30 rounded-none"
       />
       <button
         type="submit"
-        className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-ink-faint/30 hover:text-gold transition-colors"
+        className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-gold/40 hover:text-gold/70 transition-colors duration-500"
       >
         <Search size={18} />
       </button>

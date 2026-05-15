@@ -1,95 +1,59 @@
-import CloudDivider from "@/components/ui/InkDivider";
-
 export default function AboutPage() {
   return (
-    <div className="max-w-content mx-auto">
-      <header className="text-center mb-14">
-        <div
-          className="flex items-center justify-center gap-4 mb-6 opacity-0 animate-fade-in"
-          style={{ animationDelay: "0.1s" }}
-        >
-          <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/40" />
-          <span className="w-1.5 h-1.5 rounded-full bg-gold/40" />
-          <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/40" />
-        </div>
-        <h1 className="font-display text-5xl text-ink tracking-wider mb-4 opacity-0 animate-fade-up">关于我</h1>
-        <CloudDivider />
-      </header>
+    <div className="relative">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[30%] left-[30%] w-[400px] h-[250px] rounded-full bg-gold/[0.015] blur-[80px] animate-fog-drift" />
+      </div>
 
-      <div className="space-y-12">
-        <section className="opacity-0 animate-fade-up" style={{ animationDelay: "0.2s" }}>
-          <h2 className="font-serif text-xl text-ink mb-5 flex items-center gap-3">
-            <span className="w-1 h-6 bg-gold/60" />
-            你好，欢迎来到博云隙
-          </h2>
-          <div className="pl-4 border-l-2 border-gold/20 py-1">
-            <p className="text-ink-light leading-[2] text-[15px]">
-              我是一个热爱思考与记录的人。在这个快节奏的时代，我选择用文字慢下来，
-              记录生活中的点滴感悟，分享技术上的探索与成长。每一篇文章，都是一次与自己的对话，
-              也是一次与世界的交流。
+      <div className="max-w-content mx-auto px-6 py-16 relative z-10">
+        <header className="text-center mb-20">
+          <div className="rift-line animate-rift-glow mb-10" />
+          <h1 className="font-serif text-3xl text-pale tracking-[0.2em] gold-text-glow">关于</h1>
+          <div className="rift-line animate-rift-glow mt-10" style={{ animationDelay: "-2s" }} />
+        </header>
+
+        <div className="space-y-16">
+          <section className="scroll-vessel incomplete-border p-8">
+            <h2 className="font-serif text-pale-soft text-sm tracking-[0.2em] mb-4 flex items-center gap-3">
+              <span className="w-1 h-4 bg-gold/20" />
+              档案馆主
+            </h2>
+            <p className="text-pale-muted text-sm leading-[2.2]">
+              薄云隙的创建者。在数字与古典之间穿行，于云层裂隙处窥见光芒。以文字为舟，在信息的深海中寻找那些被遗忘的岛屿。
             </p>
-          </div>
-        </section>
+          </section>
 
-        <CloudDivider label="关于本站" />
-
-        <section className="opacity-0 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-          <div className="pl-4 border-l-2 border-gold/20 py-1">
-            <p className="text-ink-light leading-[2] text-[15px]">
-              博云隙是我的个人博客，创建于对知识与思考的热爱之上。这里记录着我在技术、
-              生活、阅读等方面的思考与总结。我希望这些文字能够像云隙间的光一样，在时间的长河中
-              留下淡淡的痕迹，也希望能为偶然到访的你带来一些启发或共鸣。
+          <section className="scroll-vessel incomplete-border p-8">
+            <h2 className="font-serif text-pale-soft text-sm tracking-[0.2em] mb-4 flex items-center gap-3">
+              <span className="w-1 h-4 bg-gold/20" />
+              关于此馆
+            </h2>
+            <p className="text-pale-muted text-sm leading-[2.2]">
+              薄云隙是一座漂浮于云海中的数字档案馆。这里收藏着思考的碎片、技术的痕迹、与世界的对话。每一篇卷宗，都是从云层裂隙中捕捉到的一缕微光。
             </p>
-          </div>
-        </section>
+          </section>
 
-        <CloudDivider label="联系方式" />
-
-        <section className="opacity-0 animate-fade-up" style={{ animationDelay: "0.4s" }}>
-          <div className="space-y-4">
-            <div className="cloud-card p-4 flex items-center gap-4 group">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center bg-gold-faint text-gold font-serif text-sm group-hover:bg-gold/20 transition-all duration-300">
-                邮
-              </span>
-              <div>
-                <p className="text-ink-faint text-xs font-serif tracking-wider mb-0.5">邮箱</p>
-                <a
-                  href="mailto:hello@moyun.dev"
-                  className="text-ink hover:text-gold transition-colors text-sm underline decoration-gold/30 underline-offset-3"
-                >
+          <section className="scroll-vessel incomplete-border p-8">
+            <h2 className="font-serif text-pale-soft text-sm tracking-[0.2em] mb-4 flex items-center gap-3">
+              <span className="w-1 h-4 bg-gold/20" />
+              联络方式
+            </h2>
+            <div className="space-y-3">
+              <div className="flex items-center gap-4">
+                <span className="w-6 h-6 rounded-full border border-gold/10 flex items-center justify-center text-gold/30 text-[10px] font-serif">邮</span>
+                <a href="mailto:hello@moyun.dev" className="text-pale-muted text-sm hover:text-gold/60 transition-colors duration-500 border-b border-gold/10 hover:border-gold/25">
                   hello@moyun.dev
                 </a>
               </div>
-            </div>
-
-            <div className="cloud-card p-4 flex items-center gap-4 group">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center bg-gold-faint text-gold font-serif text-sm group-hover:bg-gold/20 transition-all duration-300">
-                源
-              </span>
-              <div>
-                <p className="text-ink-faint text-xs font-serif tracking-wider mb-0.5">GitHub</p>
-                <a
-                  href="https://github.com/moyun"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ink hover:text-gold transition-colors text-sm underline decoration-gold/30 underline-offset-3"
-                >
+              <div className="flex items-center gap-4">
+                <span className="w-6 h-6 rounded-full border border-gold/10 flex items-center justify-center text-gold/30 text-[10px] font-serif">源</span>
+                <a href="https://github.com/moyun" target="_blank" rel="noopener noreferrer" className="text-pale-muted text-sm hover:text-gold/60 transition-colors duration-500 border-b border-gold/10 hover:border-gold/25">
                   @moyun
                 </a>
               </div>
             </div>
-
-            <div className="cloud-card p-4 flex items-center gap-4 group">
-              <span className="w-8 h-8 rounded-full flex items-center justify-center bg-gold-faint text-gold font-serif text-sm group-hover:bg-gold/20 transition-all duration-300">
-                信
-              </span>
-              <div>
-                <p className="text-ink-faint text-xs font-serif tracking-wider mb-0.5">微信</p>
-                <span className="text-ink text-sm">moyun_dev</span>
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   );
