@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export default async function HomePage() {
-  const [posts, categories] = await Promise.all([
+  const [posts, categories, settings] = await Promise.all([
     prisma.post.findMany({
       where: { published: true },
       include: { category: true, tags: { include: { tag: true } } },
@@ -13,7 +13,13 @@ export default async function HomePage() {
     prisma.category.findMany({
       include: { _count: { select: { posts: { where: { published: true } } } } },
     }),
+    prisma.siteSetting.findFirst({ where: { id: 1 } }),
   ]);
+
+  const heroTitle = settings?.heroTitle || "薄云隙";
+  const heroSubtitle = settings?.heroSubtitle || "窥见世界裂隙 · 数字古风档案馆";
+  const archiveLabel = settings?.archiveLabel || "云 海 档 案 馆";
+  const emptyStateText = settings?.emptyStateText || "档案馆中尚无卷宗";
 
   const transformedPosts = posts.map(transformPost);
 
@@ -21,9 +27,9 @@ export default async function HomePage() {
     <div className="relative">
       {/* 雾气层 */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[10%] left-[20%] w-[500px] h-[300px] rounded-full bg-gold/[0.02] blur-[100px] animate-fog-drift" />
-        <div className="absolute top-[50%] right-[10%] w-[400px] h-[250px] rounded-full bg-gold/[0.015] blur-[80px] animate-fog-drift-slow" />
-        <div className="absolute bottom-[20%] left-[40%] w-[350px] h-[200px] rounded-full bg-white/[0.01] blur-[90px] animate-fog-drift" style={{ animationDelay: "-8s" }} />
+        <div className="absolute top-[10%] left-[20%] w-[500px] h-[300px] rounded-full blur-[100px] animate-fog-drift" style={{backgroundColor: "rgba(var(--gold-rgb),0.02)"}} />
+        <div className="absolute top-[50%] right-[10%] w-[400px] h-[250px] rounded-full blur-[80px] animate-fog-drift-slow" style={{backgroundColor: "rgba(var(--gold-rgb),0.015)"}} />
+        <div className="absolute bottom-[20%] left-[40%] w-[350px] h-[200px] rounded-full blur-[90px] animate-fog-drift" style={{backgroundColor: "rgba(var(--fog-white),0.01)", animationDelay: "-8s"}} />
       </div>
 
       {/* 粒子 */}
@@ -31,8 +37,9 @@ export default async function HomePage() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="absolute w-px h-px bg-gold/30 animate-particle-fall"
+            className="absolute w-px h-px animate-particle-fall"
             style={{
+              backgroundColor: "rgba(var(--gold-rgb),0.3)",
               left: `${15 + i * 15}%`,
               animationDuration: `${10 + i * 3}s`,
               animationDelay: `${i * 2}s`,
@@ -47,17 +54,17 @@ export default async function HomePage() {
         <div className="rift-line animate-rift-glow mb-8" />
 
         <h1
-          className="font-display text-6xl md:text-8xl text-pale tracking-[0.3em] opacity-0 animate-fade-up gold-text-glow"
+          className="font-display text-6xl md:text-8xl text-[var(--text)] tracking-[0.3em] opacity-0 animate-fade-up gold-text-glow"
           style={{ animationDelay: "0.3s" }}
         >
-          薄云隙
+          {heroTitle}
         </h1>
 
         <p
-          className="font-serif text-pale-muted text-sm tracking-[0.5em] mt-6 opacity-0 animate-fade-up"
+          className="font-serif text-[var(--text-muted)] text-sm tracking-[0.5em] mt-6 opacity-0 animate-fade-up"
           style={{ animationDelay: "0.7s" }}
         >
-          窥见世界裂隙 · 数字古风档案馆
+          {heroSubtitle}
         </p>
 
         {/* 裂隙下光 */}
@@ -75,7 +82,7 @@ export default async function HomePage() {
               className="portal-link"
             >
               {cat.name}
-              <span className="text-pale-ghost text-[10px] ml-1">{cat._count.posts}</span>
+              <span className="text-[var(--text-ghost)] text-[10px] ml-1">{cat._count.posts}</span>
             </Link>
           ))}
         </nav>
@@ -89,7 +96,7 @@ export default async function HomePage() {
           className="text-center mb-16 opacity-0 animate-fade-up"
           style={{ animationDelay: "0.2s" }}
         >
-          <span className="text-pale-ghost text-[10px] tracking-[0.5em] font-serif">云 海 档 案 馆</span>
+          <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.5em] font-serif">{archiveLabel}</span>
         </div>
 
         <div className="space-y-6">
@@ -106,20 +113,20 @@ export default async function HomePage() {
                     {post.category && (
                       <span className="gold-tag">{post.category.name}</span>
                     )}
-                    <span className="text-pale-ghost text-[10px] tracking-wider">
+                    <span className="text-[var(--text-ghost)] text-[10px] tracking-wider">
                       {new Date(post.createdAt).getFullYear()}.{String(new Date(post.createdAt).getMonth() + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <h2 className="font-serif text-pale text-lg md:text-xl tracking-wider mb-3 text-balance hover:text-gold-light transition-colors duration-500">
+                  <h2 className="font-serif text-[var(--text)] text-lg md:text-xl tracking-wider mb-3 text-balance hover:text-[var(--gold)] transition-colors duration-500">
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p className="text-pale-muted text-sm leading-relaxed line-clamp-2">
+                    <p className="text-[var(--text-muted)] text-sm leading-relaxed line-clamp-2">
                       {post.excerpt}
                     </p>
                   )}
                 </div>
-                <ArrowRight size={14} className="text-pale-ghost mt-2 shrink-0 group-hover:text-gold/50 transition-colors" />
+                <ArrowRight size={14} className="text-[var(--text-ghost)] mt-2 shrink-0 group-hover:text-[rgba(var(--gold-rgb),0.5)] transition-colors" />
               </div>
             </Link>
           ))}
@@ -128,7 +135,7 @@ export default async function HomePage() {
         {transformedPosts.length === 0 && (
           <div className="text-center py-24">
             <div className="rift-line mx-auto mb-8 animate-gold-breathe" />
-            <p className="text-pale-ghost text-sm font-serif tracking-[0.3em]">档案馆中尚无卷宗</p>
+            <p className="text-[var(--text-ghost)] text-sm font-serif tracking-[0.3em]">{emptyStateText}</p>
           </div>
         )}
       </section>
