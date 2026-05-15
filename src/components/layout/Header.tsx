@@ -16,103 +16,56 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
   return (
-    <header
-      className={`w-full sticky top-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-mist/80 backdrop-blur-md shadow-[0_1px_12px_rgba(212,175,55,0.04)]"
-          : "bg-mist"
-      }`}
-    >
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+    <header className={`w-full sticky top-0 z-50 transition-all duration-700 ${scrolled ? "bg-void/80 backdrop-blur-md" : ""}`}>
+      <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 group">
+          <span className="w-7 h-7 rounded-full border border-gold/20 flex items-center justify-center text-gold/50 text-xs font-serif group-hover:border-gold/40 group-hover:text-gold/70 transition-all duration-500">隙</span>
+          <span className="font-serif text-pale-soft text-sm tracking-[0.2em] group-hover:text-pale transition-colors duration-500">薄云隙</span>
+        </Link>
 
-      <div className="max-w-6xl mx-auto px-4 py-5">
-        <div className="flex flex-col items-center">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-display text-3xl text-ink tracking-[0.2em]">
-              博云隙
-            </span>
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gold-faint text-gold font-serif text-[10px] opacity-80 group-hover:opacity-100 transition-all duration-300">
-              印
-            </span>
-          </Link>
-
-          <div className="w-48 mt-3">
-            <div className="cloud-divider" />
-          </div>
-
-          <nav className="hidden md:flex items-center gap-3 mt-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-serif text-ink-muted tracking-widest transition-colors hover:text-ink hover:bg-gold-faint px-3 py-1 rounded-capsule"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:block">
-            <Link
-              href="/search"
-              className="p-2 text-ink-faint/50 hover:text-gold transition-colors"
-            >
-              <Search size={18} />
-            </Link>
-          </div>
-
-          <div className="md:hidden flex items-center gap-2 mt-4">
-            <Link
-              href="/search"
-              className="p-2 text-ink-faint/50 hover:text-gold transition-colors"
-            >
-              <Search size={18} />
-            </Link>
-            <button
-              className="p-2 text-ink-faint hover:text-ink transition-colors"
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          mobileOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <nav className="bg-mist/95 backdrop-blur-sm px-4 pb-6 pt-2">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="block py-3 text-center font-serif text-ink-faint tracking-widest border-b border-ink/5 hover:text-ink transition-colors"
-              onClick={() => setMobileOpen(false)}
-            >
+            <Link key={link.href} href={link.href} className="portal-link">
               {link.label}
             </Link>
           ))}
+          <Link href="/search" className="portal-link ml-2">
+            <Search size={14} />
+          </Link>
         </nav>
+
+        <div className="md:hidden flex items-center gap-3">
+          <Link href="/search" className="text-pale-muted hover:text-gold/60 transition-colors">
+            <Search size={16} />
+          </Link>
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="text-pale-muted hover:text-pale transition-colors">
+            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
 
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+      <div className="rift-horizontal" />
+
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 bg-void/95 backdrop-blur-md z-40 flex flex-col items-center justify-center gap-8">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="portal-link text-base" onClick={() => setMobileOpen(false)}>
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
     </header>
   );
 }

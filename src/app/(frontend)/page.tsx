@@ -1,11 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { transformPost } from "@/lib/types";
-import CategoryNav from "@/components/frontend/CategoryNav";
-import PostList from "@/components/frontend/PostList";
-import Sidebar from "@/components/layout/Sidebar";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export default async function HomePage() {
-  const [posts, categories, tags] = await Promise.all([
+  const [posts, categories] = await Promise.all([
     prisma.post.findMany({
       where: { published: true },
       include: { category: true, tags: { include: { tag: true } } },
@@ -14,74 +13,125 @@ export default async function HomePage() {
     prisma.category.findMany({
       include: { _count: { select: { posts: { where: { published: true } } } } },
     }),
-    prisma.tag.findMany({
-      include: { _count: { select: { posts: { where: { post: { published: true } } } } } },
-    }),
   ]);
 
   const transformedPosts = posts.map(transformPost);
-  const recentPosts = transformedPosts.slice(0, 5);
 
   return (
-    <div>
-      <section className="text-center py-24 mb-12 relative overflow-hidden">
-        <div className="cloud-blob w-64 h-64 bg-gold/[0.04] top-10 -left-20 animate-cloud-drift" />
-        <div className="cloud-blob w-48 h-48 bg-gold/[0.06] top-20 right-10 animate-cloud-drift-slow" />
-        <div className="cloud-blob w-56 h-56 bg-mist-deep/30 bottom-0 left-1/3 animate-cloud-drift" style={{ animationDelay: "2s" }} />
+    <div className="relative">
+      {/* 雾气层 */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] left-[20%] w-[500px] h-[300px] rounded-full bg-gold/[0.02] blur-[100px] animate-fog-drift" />
+        <div className="absolute top-[50%] right-[10%] w-[400px] h-[250px] rounded-full bg-gold/[0.015] blur-[80px] animate-fog-drift-slow" />
+        <div className="absolute bottom-[20%] left-[40%] w-[350px] h-[200px] rounded-full bg-white/[0.01] blur-[90px] animate-fog-drift" style={{ animationDelay: "-8s" }} />
+      </div>
 
-        <div className="relative z-10">
+      {/* 粒子 */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {Array.from({ length: 6 }).map((_, i) => (
           <div
-            className="flex items-center justify-center gap-6 mb-8 opacity-0 animate-fade-in"
-            style={{ animationDelay: "0.2s" }}
-          >
-            <span className="h-px w-24 bg-gradient-to-r from-transparent to-gold/50" />
-            <span className="w-1.5 h-1.5 rounded-full bg-gold/40 animate-gold-breathe" />
-            <span className="h-px w-24 bg-gradient-to-l from-transparent to-gold/50" />
-          </div>
+            key={i}
+            className="absolute w-px h-px bg-gold/30 animate-particle-fall"
+            style={{
+              left: `${15 + i * 15}%`,
+              animationDuration: `${10 + i * 3}s`,
+              animationDelay: `${i * 2}s`,
+            }}
+          />
+        ))}
+      </div>
 
-          <h1
-            className="font-display text-6xl md:text-8xl text-ink mb-6 tracking-[0.2em] opacity-0 animate-brush-stroke"
-          >
-            博云隙
-          </h1>
+      {/* Hero 区域 - 云层裂隙 */}
+      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6">
+        {/* 裂隙光柱 */}
+        <div className="rift-line animate-rift-glow mb-8" />
 
-          <p
-            className="font-serif text-ink-muted text-base tracking-[0.3em] mb-8 opacity-0 animate-fade-up"
-            style={{ animationDelay: "0.6s" }}
-          >
-            以云为伴 · 记录成长与思考
-          </p>
+        <h1
+          className="font-display text-6xl md:text-8xl text-pale tracking-[0.3em] opacity-0 animate-fade-up gold-text-glow"
+          style={{ animationDelay: "0.3s" }}
+        >
+          薄云隙
+        </h1>
 
-          <div
-            className="flex items-center justify-center gap-6 opacity-0 animate-fade-in"
-            style={{ animationDelay: "0.9s" }}
-          >
-            <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/30" />
-            <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gold-faint text-gold text-[10px] font-serif opacity-60 animate-float-gentle">
-              印
-            </span>
-            <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/30" />
-          </div>
-        </div>
+        <p
+          className="font-serif text-pale-muted text-sm tracking-[0.5em] mt-6 opacity-0 animate-fade-up"
+          style={{ animationDelay: "0.7s" }}
+        >
+          窥见世界裂隙 · 数字古风档案馆
+        </p>
+
+        {/* 裂隙下光 */}
+        <div className="rift-line animate-rift-glow mt-8" style={{ animationDelay: "-2s" }} />
+
+        {/* 世界入口导航 */}
+        <nav
+          className="flex flex-wrap justify-center gap-4 mt-16 opacity-0 animate-fade-up"
+          style={{ animationDelay: "1.1s" }}
+        >
+          {categories.slice(0, 5).map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/categories/${cat.slug}`}
+              className="portal-link"
+            >
+              {cat.name}
+              <span className="text-pale-ghost text-[10px] ml-1">{cat._count.posts}</span>
+            </Link>
+          ))}
+        </nav>
       </section>
 
-      <div className="mb-10">
-        <CategoryNav categories={categories} />
-      </div>
+      {/* 云海档案馆 - 漂浮文章 */}
+      <section className="relative max-w-4xl mx-auto px-6 pb-32">
+        <div className="rift-horizontal mb-16" />
 
-      <div className="flex gap-12">
-        <div className="flex-1 min-w-0">
-          <PostList posts={transformedPosts} />
+        <div
+          className="text-center mb-16 opacity-0 animate-fade-up"
+          style={{ animationDelay: "0.2s" }}
+        >
+          <span className="text-pale-ghost text-[10px] tracking-[0.5em] font-serif">云 海 档 案 馆</span>
         </div>
 
-        <aside className="hidden lg:block w-80 shrink-0">
-          <Sidebar
-            categories={categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug, postCount: c._count.posts }))}
-            tags={tags.map((t) => ({ id: t.id, name: t.name, slug: t.slug }))}
-            recentPosts={recentPosts}
-          />
-        </aside>
-      </div>
+        <div className="space-y-6">
+          {transformedPosts.map((post, index) => (
+            <Link
+              key={post.id}
+              href={`/posts/${post.slug}`}
+              className="scroll-vessel incomplete-border block p-6 md:p-8 opacity-0 animate-fade-up"
+              style={{ animationDelay: `${0.1 * index + 0.3}s` }}
+            >
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-3">
+                    {post.category && (
+                      <span className="gold-tag">{post.category.name}</span>
+                    )}
+                    <span className="text-pale-ghost text-[10px] tracking-wider">
+                      {new Date(post.createdAt).getFullYear()}.{String(new Date(post.createdAt).getMonth() + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h2 className="font-serif text-pale text-lg md:text-xl tracking-wider mb-3 text-balance hover:text-gold-light transition-colors duration-500">
+                    {post.title}
+                  </h2>
+                  {post.excerpt && (
+                    <p className="text-pale-muted text-sm leading-relaxed line-clamp-2">
+                      {post.excerpt}
+                    </p>
+                  )}
+                </div>
+                <ArrowRight size={14} className="text-pale-ghost mt-2 shrink-0 group-hover:text-gold/50 transition-colors" />
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {transformedPosts.length === 0 && (
+          <div className="text-center py-24">
+            <div className="rift-line mx-auto mb-8 animate-gold-breathe" />
+            <p className="text-pale-ghost text-sm font-serif tracking-[0.3em]">档案馆中尚无卷宗</p>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

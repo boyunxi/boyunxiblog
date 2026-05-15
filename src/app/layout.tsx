@@ -7,7 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body className="bg-mist font-sans min-h-screen">{children}</body>
+      <body className="bg-void font-sans min-h-screen">{children}</body>
     </html>
   );
 }
