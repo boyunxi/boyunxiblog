@@ -10,6 +10,7 @@ import {
   FolderTree,
   Tags,
   BarChart3,
+  Settings,
   ExternalLink,
   LogOut,
   Menu,
@@ -22,6 +23,7 @@ const navItems = [
   { label: "分类管理", icon: FolderTree, href: "/admin/categories" },
   { label: "标签管理", icon: Tags, href: "/admin/tags" },
   { label: "数据看板", icon: BarChart3, href: "/admin/dashboard" },
+  { label: "站点设置", icon: Settings, href: "/admin/settings" },
 ];
 
 export default function AdminSidebar() {

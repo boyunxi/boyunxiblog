@@ -53,3 +53,25 @@ model PostTag {
 
   @@id([postId, tagId])
 }
+
+model SiteSetting {
+  id              Int      @id @default(1)
+  siteName        String   @default("薄云隙")
+  siteDescription String?  @default("窥见世界裂隙")
+  logoText        String?  @default("隙")
+  heroTitle       String?  @default("薄云隙")
+  heroSubtitle    String?  @default("窥见世界裂隙 · 数字古风档案馆")
+  archiveLabel    String?  @default("云 海 档 案 馆")
+  emptyStateText  String?  @default("档案馆中尚无卷宗")
+  authorName      String?
+  authorBio       String?
+  contactEmail    String?
+  githubUrl       String?
+  copyrightText   String?  @default("薄云隙 · 数字古风档案馆")
+  icpNumber       String?
+  seoTitle        String?
+  seoDescription  String?
+  seoKeywords     String?
+  aboutContent    String?
+  updatedAt       DateTime @updatedAt
+}
