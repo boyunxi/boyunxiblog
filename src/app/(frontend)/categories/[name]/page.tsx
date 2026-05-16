@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { transformPost } from "@/lib/types";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -16,12 +17,7 @@ export default async function CategoryPage({ params }: { params: { name: string 
   });
 
   if (!category) {
-    return (
-      <div className="text-center py-32">
-        <div className="rift-line mx-auto animate-gold-breathe mb-8" />
-        <p className="text-[var(--text-ghost)] font-serif tracking-[0.3em] text-xs">此入口尚无卷宗</p>
-      </div>
-    );
+    notFound();
   }
 
   const posts = category.posts.map(transformPost);
