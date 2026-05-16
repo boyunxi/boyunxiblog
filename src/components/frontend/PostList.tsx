@@ -7,7 +7,7 @@ export default function PostList({ posts }: { posts: Post[] }) {
     return (
       <div className="text-center py-20">
         <div className="rift-line mx-auto animate-gold-breathe mb-8" />
-        <p className="text-pale-ghost font-serif tracking-[0.3em] text-xs">档案馆中尚无卷宗</p>
+        <p className="text-[var(--text-ghost)] font-serif tracking-[0.3em] text-xs">档案馆中尚无卷宗</p>
       </div>
     );
   }
