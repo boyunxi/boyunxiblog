@@ -9,33 +9,32 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "5.22.0",
+    "bcryptjs": "2.4.3",
+    "lucide-react": "0.453.0",
     "next": "14.2.15",
+    "next-auth": "4.24.8",
+    "next-mdx-remote": "^6.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "@prisma/client": "5.22.0",
-    "next-auth": "4.24.8",
-    "@tiptap/react": "2.9.1",
-    "@tiptap/starter-kit": "2.9.1",
-    "@tiptap/extension-image": "2.9.1",
-    "@tiptap/extension-link": "2.9.1",
-    "@tiptap/extension-placeholder": "2.9.1",
-    "lucide-react": "0.453.0",
-    "bcryptjs": "2.4.3",
+    "rehype-pretty-code": "^0.14.3",
+    "remark-gfm": "^4.0.1",
+    "shiki": "^4.0.2",
     "zod": "3.23.8"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "@types/bcryptjs": "^2.4.0",
+    "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
-    "@types/node": "^20.0.0",
-    "@types/bcryptjs": "^2.4.0",
-    "prisma": "5.22.0",
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.0",
     "autoprefixer": "^10.4.0",
     "eslint": "^8.0.0",
     "eslint-config-next": "14.2.15",
-    "ts-node": "^10.9.0"
+    "postcss": "^8.4.0",
+    "prisma": "5.22.0",
+    "tailwindcss": "^3.4.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

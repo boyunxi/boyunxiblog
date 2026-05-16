@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Eye, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
+import MdxRenderer from "@/lib/mdx-renderer";
 
 export async function generateStaticParams() {
   const posts = await prisma.post.findMany({
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
 }
 
 function estimateReadingTime(content: string): string {
-  const text = content.replace(/<[^>]*>/g, "");
+  const text = content.replace(/<[^>]*>/g, "").replace(/[#*`\[\]()]/g, "");
   const minutes = Math.max(1, Math.ceil(text.length / 500));
   return `${minutes} 分钟`;
 }
@@ -96,10 +97,13 @@ export default async function PostPage({ params }: { params: { slug: string } })
           </div>
         )}
 
-        <div
-          className="prose-dark mb-12"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+        <div className="prose-dark mb-12">
+          {post.content.trim().startsWith("<") ? (
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          ) : (
+            <MdxRenderer source={post.content} />
+          )}
+        </div>
 
         {transformedPost.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-12">
