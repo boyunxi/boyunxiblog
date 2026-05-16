@@ -33,26 +33,26 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{backgroundColor: "#FAF8F3"}}>
-      <div className="absolute top-0 left-0 w-64 h-64 rounded-full -translate-x-1/2 -translate-y-1/2" style={{backgroundColor: "rgba(26,26,26,0.03)"}} />
-      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full translate-x-1/3 translate-y-1/3" style={{backgroundColor: "rgba(26,26,26,0.03)"}} />
-      <div className="absolute top-1/4 right-10 w-32 h-32 rounded-full" style={{backgroundColor: "rgba(184,150,15,0.05)"}} />
-      <div className="absolute bottom-1/4 left-10 w-48 h-48 rounded-full" style={{backgroundColor: "rgba(184,150,15,0.05)"}} />
+    <div className="min-h-screen bg-ricepaper flex items-center justify-center relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-64 h-64 bg-ink/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-ink/5 rounded-full translate-x-1/3 translate-y-1/3" />
+      <div className="absolute top-1/4 right-10 w-32 h-32 bg-gold/5 rounded-full" />
+      <div className="absolute bottom-1/4 left-10 w-48 h-48 bg-ochre/5 rounded-full" />
 
-      <div className="shadow-xl rounded-sm w-full max-w-md mx-4 relative z-10" style={{backgroundColor: "#FAF8F3", border: "1px solid rgba(184,150,15,0.1)", boxShadow: "0 0 40px rgba(184,150,15,0.03)"}}>
-        <div className="h-1" style={{background: "linear-gradient(to right, transparent, #B8960F, transparent)"}} />
+      <div className="scroll-card bg-ricepaper shadow-xl rounded-sm w-full max-w-md mx-4 relative z-10">
+        <div className="h-1 bg-gradient-to-r from-transparent via-gold to-transparent" />
 
         <div className="p-8">
           <div className="text-center mb-8">
-            <h1 className="font-serif text-3xl tracking-wider" style={{color: "#1a1a1a"}}>
+            <h1 className="font-serif text-3xl text-ink tracking-wider">
               墨韵随笔
             </h1>
-            <div className="w-16 h-0.5 mx-auto my-3" style={{backgroundColor: "#B8960F"}} />
-            <p className="text-sm" style={{color: "rgba(26,26,26,0.5)"}}>管理后台登录</p>
+            <div className="w-16 h-0.5 bg-gold mx-auto my-3" />
+            <p className="text-inkGray text-sm">管理后台登录</p>
           </div>
 
           {error && (
-            <div className="mb-4 p-3 text-sm rounded-sm text-center" style={{backgroundColor: "rgba(180,120,30,0.1)", border: "1px solid rgba(180,120,30,0.3)", color: "#a0752a"}}>
+            <div className="mb-4 p-3 bg-ochre/10 border border-ochre/30 text-ochre text-sm rounded-sm text-center">
               {error}
             </div>
           )}
@@ -61,8 +61,7 @@ export default function AdminLoginPage() {
             <div className="relative">
               <Mail
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2"
-                style={{color: "rgba(26,26,26,0.35)"}}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-inkGray/50"
               />
               <input
                 type="email"
@@ -70,16 +69,14 @@ export default function AdminLoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="邮箱"
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-sm text-sm transition-colors focus:outline-none"
-                style={{backgroundColor: "#fff", border: "1px solid rgba(26,26,26,0.15)", color: "#1a1a1a"}}
+                className="w-full pl-10 pr-4 py-3 bg-cloudWhite border border-ink/20 rounded-sm text-ink text-sm placeholder:text-inkGray/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/50 transition-colors"
               />
             </div>
 
             <div className="relative">
               <Lock
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2"
-                style={{color: "rgba(26,26,26,0.35)"}}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-inkGray/50"
               />
               <input
                 type="password"
@@ -87,23 +84,21 @@ export default function AdminLoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="密码"
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-sm text-sm transition-colors focus:outline-none"
-                style={{backgroundColor: "#fff", border: "1px solid rgba(26,26,26,0.15)", color: "#1a1a1a"}}
+                className="w-full pl-10 pr-4 py-3 bg-cloudWhite border border-ink/20 rounded-sm text-ink text-sm placeholder:text-inkGray/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/50 transition-colors"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 text-sm rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{backgroundColor: "#1a1a1a", color: "#FAF8F3", border: "1px solid rgba(184,150,15,0.3)"}}
+              className="w-full py-3 bg-ink text-ricepaper text-sm rounded-sm border border-gold/50 hover:bg-ochre transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "登录中..." : "登录"}
             </button>
           </form>
         </div>
 
-        <div className="h-1" style={{background: "linear-gradient(to right, transparent, #B8960F, transparent)"}} />
+        <div className="h-1 bg-gradient-to-r from-transparent via-gold to-transparent" />
       </div>
     </div>
   );
