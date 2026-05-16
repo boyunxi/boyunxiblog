@@ -71,16 +71,17 @@ export default function EditPostPage() {
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
-      .then((data) => setCategories(data.categories ?? data ?? []));
+      .then((data) => setCategories(data.data ?? []));
     fetch("/api/tags")
       .then((res) => res.json())
-      .then((data) => setTags(data.tags ?? data ?? []));
+      .then((data) => setTags(data.data ?? []));
   }, []);
 
   useEffect(() => {
     fetch(`/api/posts/${postId}`)
       .then((res) => res.json())
-      .then((data: PostData) => {
+      .then((res) => {
+        const data: PostData = res.data;
         setTitle(data.title);
         setSlug(data.slug);
         setCoverImage(data.coverImage ?? "");

@@ -50,13 +50,13 @@ export default async function PostPage({ params }: { params: { slug: string } })
   return (
     <article className="relative">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] right-[15%] w-[400px] h-[250px] rounded-full bg-gold/[0.015] blur-[80px] animate-fog-drift-slow" />
+        <div className="absolute top-[20%] right-[15%] w-[400px] h-[250px] rounded-full blur-[80px] animate-fog-drift-slow" style={{backgroundColor: "rgba(var(--gold-rgb),0.015)"}} />
       </div>
 
       <div className="max-w-content mx-auto px-6 pt-8 pb-32 relative z-10">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-pale-ghost hover:text-gold/60 transition-colors duration-500 mb-16 text-xs font-serif tracking-[0.2em]"
+          className="inline-flex items-center gap-2 text-[var(--text-ghost)] hover:text-[rgba(var(--gold-rgb),0.6)] transition-colors duration-500 mb-16 text-xs font-serif tracking-[0.2em]"
         >
           <ArrowLeft size={12} />
           返回档案馆
@@ -65,11 +65,11 @@ export default async function PostPage({ params }: { params: { slug: string } })
         <header className="mb-16 text-center">
           <div className="rift-line animate-rift-glow mb-10" />
 
-          <h1 className="font-serif text-2xl md:text-3xl text-pale leading-relaxed tracking-wider mb-8 text-balance gold-text-glow">
+          <h1 className="font-serif text-2xl md:text-3xl text-[var(--text)] leading-relaxed tracking-wider mb-8 text-balance gold-text-glow">
             {post.title}
           </h1>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 text-pale-ghost text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-[var(--text-ghost)] text-xs">
             {post.category && (
               <span className="gold-tag">{post.category.name}</span>
             )}
@@ -116,8 +116,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
         <nav className="flex justify-between items-start gap-8">
           {prevPost ? (
             <Link href={`/posts/${prevPost.slug}`} className="scroll-vessel incomplete-border p-5 flex-1 group">
-              <span className="text-pale-ghost text-[10px] tracking-[0.2em] font-serif block mb-2">← 上一卷宗</span>
-              <span className="text-pale-muted text-sm font-serif line-clamp-1 group-hover:text-gold/60 transition-colors duration-500">
+              <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.2em] font-serif block mb-2">← 上一卷宗</span>
+              <span className="text-[var(--text-muted)] text-sm font-serif line-clamp-1 group-hover:text-[rgba(var(--gold-rgb),0.6)] transition-colors duration-500">
                 {prevPost.title}
               </span>
             </Link>
@@ -126,8 +126,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
           )}
           {nextPost ? (
             <Link href={`/posts/${nextPost.slug}`} className="scroll-vessel incomplete-border p-5 flex-1 text-right group">
-              <span className="text-pale-ghost text-[10px] tracking-[0.2em] font-serif block mb-2">下一卷宗 →</span>
-              <span className="text-pale-muted text-sm font-serif line-clamp-1 group-hover:text-gold/60 transition-colors duration-500">
+              <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.2em] font-serif block mb-2">下一卷宗 →</span>
+              <span className="text-[var(--text-muted)] text-sm font-serif line-clamp-1 group-hover:text-[rgba(var(--gold-rgb),0.6)] transition-colors duration-500">
                 {nextPost.title}
               </span>
             </Link>

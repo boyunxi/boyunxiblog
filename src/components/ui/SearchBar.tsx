@@ -22,11 +22,11 @@ export default function SearchBar() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="寻章摘句..."
-        className="w-full bg-transparent border-b border-gold/10 font-serif text-pale placeholder:text-pale-ghost py-3 pr-10 focus:outline-none transition-colors duration-500 focus:border-gold/30 rounded-none"
+        className="w-full bg-transparent border-b border-[rgba(var(--gold-rgb),0.1)] font-serif text-[var(--text)] placeholder:text-[var(--text-ghost)] py-3 pr-10 focus:outline-none transition-colors duration-500 focus:border-[rgba(var(--gold-rgb),0.3)] rounded-none"
       />
       <button
         type="submit"
-        className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-gold/40 hover:text-gold/70 transition-colors duration-500"
+        className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-[rgba(var(--gold-rgb),0.4)] hover:text-[rgba(var(--gold-rgb),0.7)] transition-colors duration-500"
       >
         <Search size={18} />
       </button>

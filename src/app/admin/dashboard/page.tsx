@@ -9,9 +9,9 @@ interface Stats {
   totalCategories: number;
   totalTags: number;
   totalViews: number;
-  postsPerMonth: { month: string; count: number }[];
-  viewsPerMonth: { month: string; views: number }[];
-  postsPerCategory: { name: string; count: number }[];
+  postsByMonth: { month: string; count: number }[];
+  viewsByMonth: { month: string; views: number }[];
+  categoryDistribution: { name: string; count: number }[];
   topPosts: { id: number; title: string; views: number }[];
 }
 
@@ -21,16 +21,18 @@ export default function DashboardPage() {
     totalCategories: 0,
     totalTags: 0,
     totalViews: 0,
-    postsPerMonth: [],
-    viewsPerMonth: [],
-    postsPerCategory: [],
+    postsByMonth: [],
+    viewsByMonth: [],
+    categoryDistribution: [],
     topPosts: [],
   });
 
   useEffect(() => {
     fetch("/api/stats")
       .then((res) => res.json())
-      .then((data) => setStats(data));
+      .then((res) => {
+        if (res.data) setStats(res.data);
+      });
   }, []);
 
   const statCards = [
@@ -40,9 +42,9 @@ export default function DashboardPage() {
     { icon: Eye, label: "总浏览量", value: stats.totalViews, color: "text-ink" },
   ];
 
-  const maxPostsPerMonth = Math.max(...stats.postsPerMonth.map((d) => d.count), 1);
-  const maxViewsPerMonth = Math.max(...stats.viewsPerMonth.map((d) => d.views), 1);
-  const maxPostsPerCategory = Math.max(...stats.postsPerCategory.map((d) => d.count), 1);
+  const maxPostsByMonth = Math.max(...stats.postsByMonth.map((d) => d.count), 1);
+  const maxViewsByMonth = Math.max(...stats.viewsByMonth.map((d) => d.views), 1);
+  const maxCategoryDistribution = Math.max(...stats.categoryDistribution.map((d) => d.count), 1);
 
   return (
     <div className="space-y-8">
@@ -66,12 +68,12 @@ export default function DashboardPage() {
         <div className="scroll-card p-6">
           <h2 className="text-lg font-serif text-ink mb-6">文章发布趋势</h2>
           <div className="flex items-end gap-3 h-48">
-            {stats.postsPerMonth.map((d) => (
+            {stats.postsByMonth.map((d) => (
               <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
                 <span className="text-xs text-inkGray/70">{d.count}</span>
                 <div
                   className="w-full bg-ink/70 rounded-t-sm min-h-[4px] transition-all"
-                  style={{ height: `${(d.count / maxPostsPerMonth) * 140}px` }}
+                  style={{ height: `${(d.count / maxPostsByMonth) * 140}px` }}
                 />
                 <span className="text-xs text-inkGray/50 mt-1">{d.month}</span>
               </div>
@@ -82,24 +84,24 @@ export default function DashboardPage() {
         <div className="scroll-card p-6">
           <h2 className="text-lg font-serif text-ink mb-6">浏览量趋势</h2>
           <svg viewBox="0 0 300 160" className="w-full h-48">
-            {stats.viewsPerMonth.length > 1 && (
+            {stats.viewsByMonth.length > 1 && (
               <>
                 <polyline
                   fill="none"
                   stroke="#2D5A4A"
                   strokeWidth="2"
                   strokeLinejoin="round"
-                  points={stats.viewsPerMonth
+                  points={stats.viewsByMonth
                     .map((d, i) => {
-                      const x = (i / (stats.viewsPerMonth.length - 1)) * 270 + 15;
-                      const y = 140 - (d.views / maxViewsPerMonth) * 120;
+                      const x = (i / (stats.viewsByMonth.length - 1)) * 270 + 15;
+                      const y = 140 - (d.views / maxViewsByMonth) * 120;
                       return `${x},${y}`;
                     })
                     .join(" ")}
                 />
-                {stats.viewsPerMonth.map((d, i) => {
-                  const x = (i / (stats.viewsPerMonth.length - 1)) * 270 + 15;
-                  const y = 140 - (d.views / maxViewsPerMonth) * 120;
+                {stats.viewsByMonth.map((d, i) => {
+                  const x = (i / (stats.viewsByMonth.length - 1)) * 270 + 15;
+                  const y = 140 - (d.views / maxViewsByMonth) * 120;
                   return (
                     <g key={d.month}>
                       <circle cx={x} cy={y} r="3" fill="#D4AF37" />
@@ -119,19 +121,19 @@ export default function DashboardPage() {
         <div className="scroll-card p-6">
           <h2 className="text-lg font-serif text-ink mb-6">分类分布</h2>
           <div className="space-y-3">
-            {stats.postsPerCategory.map((d) => (
+            {stats.categoryDistribution.map((d) => (
               <div key={d.name} className="flex items-center gap-3">
                 <span className="text-sm text-inkGray w-20 shrink-0 truncate">{d.name}</span>
                 <div className="flex-1 h-6 bg-ink/5 rounded-sm overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-ink/60 to-ochre/60 rounded-sm transition-all"
-                    style={{ width: `${(d.count / maxPostsPerCategory) * 100}%` }}
+                    style={{ width: `${(d.count / maxCategoryDistribution) * 100}%` }}
                   />
                 </div>
                 <span className="text-sm text-inkGray/70 w-8 text-right">{d.count}</span>
               </div>
             ))}
-            {stats.postsPerCategory.length === 0 && (
+            {stats.categoryDistribution.length === 0 && (
               <p className="text-inkGray/50 text-sm text-center py-4">暂无数据</p>
             )}
           </div>
