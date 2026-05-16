@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
-import Placeholder from "@tiptap/extension-placeholder";
-import { RefreshCw, ImageIcon, Bold, Italic, Heading1, Heading2, List, LinkIcon, Quote, Code, ImagePlus, Trash2 } from "lucide-react";
+import { RefreshCw, ImageIcon, Bold, Italic, Heading1, Heading2, List, LinkIcon, Quote, Code, ImagePlus, Trash2, Eye, Edit2 } from "lucide-react";
 
 interface Category {
   id: number;
@@ -56,17 +51,8 @@ export default function EditPostPage() {
   const [tags, setTags] = useState<TagItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
-
-  const editor = useEditor({
-    immediatelyRender: false,
-    extensions: [
-      StarterKit,
-      Image,
-      Link.configure({ openOnClick: false }),
-      Placeholder.configure({ placeholder: "开始写作..." }),
-    ],
-    content: "",
-  });
+  const [content, setContent] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     fetch("/api/categories")
@@ -89,15 +75,30 @@ export default function EditPostPage() {
         setExcerpt(data.excerpt ?? "");
         setPublished(data.published);
         setSelectedTags(data.tags.map((t) => t.tagId));
-        editor?.commands.setContent(data.content);
+        setContent(data.content);
         setLoading(false);
       });
-  }, [postId, editor]);
+  }, [postId]);
 
   const handleTagToggle = (tagId: number) => {
     setSelectedTags((prev) =>
       prev.includes(tagId) ? prev.filter((t) => t !== tagId) : [...prev, tagId]
     );
+  };
+
+  const insertMarkdown = (prefix: string, suffix: string = "") => {
+    const textarea = document.getElementById("md-editor") as HTMLTextAreaElement;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = content.substring(start, end);
+    const replacement = prefix + (selected || "文本") + suffix;
+    const newContent = content.substring(0, start) + replacement + content.substring(end);
+    setContent(newContent);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + (selected || "文本").length);
+    }, 0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,7 +110,7 @@ export default function EditPostPage() {
       categoryId: categoryId ? Number(categoryId) : null,
       tagIds: selectedTags,
       excerpt: excerpt || null,
-      content: editor?.getHTML() ?? "",
+      content,
       published,
     };
     await fetch(`/api/posts/${postId}`, {
@@ -239,81 +240,74 @@ export default function EditPostPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-serif text-ink mb-2">内容</label>
-          <div className="border border-ink/20 rounded-sm bg-ricepaper overflow-hidden">
-            <div className="flex gap-1 p-2 border-b border-ink/10 bg-ricepaper/50 flex-wrap">
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-serif text-ink">内容（Markdown / MDX）</label>
+            <div className="flex gap-1">
               <button
                 type="button"
-                onClick={() => editor?.chain().focus().toggleBold().run()}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("bold") ? "bg-ink/10 text-ink" : "text-inkGray"}`}
+                onClick={() => setShowPreview(false)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs transition-colors ${!showPreview ? "bg-ink/10 text-ink" : "text-inkGray hover:bg-ink/5"}`}
               >
-                <Bold className="w-4 h-4" />
+                <Edit2 className="w-3 h-3" /> 编辑
               </button>
               <button
                 type="button"
-                onClick={() => editor?.chain().focus().toggleItalic().run()}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("italic") ? "bg-ink/10 text-ink" : "text-inkGray"}`}
+                onClick={() => setShowPreview(true)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs transition-colors ${showPreview ? "bg-ink/10 text-ink" : "text-inkGray hover:bg-ink/5"}`}
               >
-                <Italic className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("heading", { level: 1 }) ? "bg-ink/10 text-ink" : "text-inkGray"}`}
-              >
-                <Heading1 className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("heading", { level: 2 }) ? "bg-ink/10 text-ink" : "text-inkGray"}`}
-              >
-                <Heading2 className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("bulletList") ? "bg-ink/10 text-ink" : "text-inkGray"}`}
-              >
-                <List className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const url = window.prompt("输入链接URL:");
-                  if (url) editor?.chain().focus().setLink({ href: url }).run();
-                }}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("link") ? "bg-ink/10 text-ink" : "text-inkGray"}`}
-              >
-                <LinkIcon className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const url = window.prompt("输入图片URL:");
-                  if (url) editor?.chain().focus().setImage({ src: url }).run();
-                }}
-                className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray"
-              >
-                <ImagePlus className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("blockquote") ? "bg-ink/10 text-ink" : "text-inkGray"}`}
-              >
-                <Quote className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-                className={`p-1.5 rounded-sm hover:bg-ink/10 ${editor?.isActive("codeBlock") ? "bg-ink/10 text-ink" : "text-inkGray"}`}
-              >
-                <Code className="w-4 h-4" />
+                <Eye className="w-3 h-3" /> 预览
               </button>
             </div>
-            <EditorContent editor={editor} className="prose prose-sm max-w-none p-4 min-h-[300px] [&_.tiptap]:min-h-[280px] [&_.tiptap]:outline-none [&_.tiptap_p.is-editor-empty:first-child::before]:text-inkGray/40 [&_.tiptap_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]" />
           </div>
+
+          {!showPreview ? (
+            <div className="border border-ink/20 rounded-sm bg-ricepaper overflow-hidden">
+              <div className="flex gap-1 p-2 border-b border-ink/10 bg-ricepaper/50 flex-wrap">
+                <button type="button" onClick={() => insertMarkdown("**", "**")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="加粗">
+                  <Bold className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("*", "*")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="斜体">
+                  <Italic className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("# ")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="一级标题">
+                  <Heading1 className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("## ")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="二级标题">
+                  <Heading2 className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("- ")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="无序列表">
+                  <List className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("[", "](url)")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="链接">
+                  <LinkIcon className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("![alt](", ")")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="图片">
+                  <ImagePlus className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("> ")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="引用">
+                  <Quote className="w-4 h-4" />
+                </button>
+                <button type="button" onClick={() => insertMarkdown("```\n", "\n```")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="代码块">
+                  <Code className="w-4 h-4" />
+                </button>
+              </div>
+              <textarea
+                id="md-editor"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="使用 Markdown 或 MDX 语法编写文章内容..."
+                className="w-full p-4 min-h-[400px] font-mono text-sm text-inkGray bg-transparent resize-y focus:outline-none"
+              />
+            </div>
+          ) : (
+            <div className="border border-ink/20 rounded-sm bg-ricepaper p-6 min-h-[400px] prose prose-sm max-w-none">
+              {content ? (
+                <div className="whitespace-pre-wrap text-sm text-inkGray">{content}</div>
+              ) : (
+                <p className="text-inkGray/40 text-sm">暂无内容，请先在编辑模式下编写</p>
+              )}
+            </div>
+          )}
         </div>
 
         <div>

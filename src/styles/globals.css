@@ -295,6 +295,49 @@
     margin: 3rem 0; border: 0; height: 1px;
     background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb),0.15), transparent);
   }
+  .prose-dark pre [data-line] {
+    padding: 0 1.5rem;
+    border-left: 2px solid transparent;
+    margin: 0 -1.5rem;
+  }
+  .prose-dark pre [data-highlighted-line] {
+    background: rgba(var(--gold-rgb),0.06);
+    border-left-color: rgba(var(--gold-rgb),0.4);
+  }
+  .prose-dark pre [data-line-numbers] [data-line]::before {
+    content: attr(data-line-number);
+    display: inline-block;
+    width: 1.5rem;
+    margin-right: 1rem;
+    text-align: right;
+    color: var(--text-ghost);
+    font-size: 0.8em;
+  }
+  .prose-dark pre [data-title]::before {
+    content: attr(data-title);
+    display: block;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(var(--gold-rgb),0.08);
+    color: var(--text-muted);
+    font-size: 0.85em;
+  }
+  .prose-dark table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9em;
+  }
+  .prose-dark th, .prose-dark td {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(var(--gold-rgb),0.1);
+    text-align: left;
+  }
+  .prose-dark th {
+    background: rgba(var(--gold-rgb),0.05);
+    color: var(--text);
+    font-weight: 500;
+  }
 }
 
 @layer utilities {
