@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&family=Noto+Sans+SC:wght@100;300;400;500&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&family=Noto+Sans+SC:wght@100;300;400;500&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap");
 
 @layer base {
   :root {
@@ -255,20 +255,22 @@
   .prose-dark code {
     padding: 0.125rem 0.375rem;
     font-size: 0.85rem;
-    font-family: monospace;
+    font-family: "JetBrains Mono", monospace;
     color: rgba(var(--gold-rgb),0.7);
     background: rgba(var(--gold-rgb),0.05);
     border-radius: 2px;
   }
   .prose-dark pre {
     padding: 1.5rem;
-    margin: 2rem 0;
+    margin: 0;
     overflow-x: auto;
     font-size: 0.85rem;
+    font-family: "JetBrains Mono", monospace;
     background: var(--code-bg);
     border: 1px solid rgba(var(--gold-rgb),0.05);
     color: var(--text-soft);
     line-height: 1.7;
+    border-radius: 2px;
   }
   .prose-dark pre code {
     background: transparent; padding: 0;

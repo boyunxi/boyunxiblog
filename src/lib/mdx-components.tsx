@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CustomPre } from "./code-block";
 
 function CustomImage({ src, alt }: React.ImgHTMLAttributes<HTMLImageElement>) {
   if (!src) return null;
@@ -64,5 +65,6 @@ function Callout({ type = "info", children }: { type?: "info" | "warning" | "err
 export const mdxComponents = {
   img: CustomImage as any,
   a: CustomLink as any,
+  pre: CustomPre as any,
   Callout,
 };
