@@ -24,12 +24,13 @@ export default function PostsPage() {
   const perPage = 10;
 
   const fetchPosts = useCallback(() => {
-    const params = new URLSearchParams({ page: String(page), perPage: String(perPage), search });
+    const params = new URLSearchParams({ page: String(page), pageSize: String(perPage), search });
     fetch(`/api/posts?${params}`)
       .then((res) => res.json())
-      .then((data) => {
-        setPosts(data.posts ?? []);
-        setTotalPages(data.totalPages ?? 1);
+      .then((res) => {
+        setPosts(res.data?.posts ?? []);
+        const total = res.data?.total ?? 0;
+        setTotalPages(Math.ceil(total / perPage) || 1);
       });
   }, [page, search]);
 

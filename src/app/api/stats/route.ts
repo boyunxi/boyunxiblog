@@ -44,9 +44,15 @@ export async function GET() {
       prisma.post.findMany({
         orderBy: { views: "desc" },
         take: 5,
-        select: { title: true, views: true },
+        select: { id: true, title: true, views: true },
       }),
     ]);
+
+    const recentPostsList = await prisma.post.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, title: true, published: true, createdAt: true, views: true },
+    });
 
     const totalViews = viewsResult._sum.views || 0;
 
@@ -94,6 +100,7 @@ export async function GET() {
         viewsByMonth,
         categoryDistribution,
         topPosts,
+        recentPosts: recentPostsList,
       },
     });
   } catch (error) {

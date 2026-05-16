@@ -11,7 +11,7 @@ export default function FrontendLayout({
 }) {
   return (
     <Providers>
-      <div className="bg-void font-sans min-h-screen flex flex-col">
+      <div className="font-sans min-h-screen flex flex-col" style={{backgroundColor: "var(--bg)"}}>
         <ReadingProgress />
         <Header />
         <main className="flex-1 min-h-screen">

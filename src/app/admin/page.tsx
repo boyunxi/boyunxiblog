@@ -33,14 +33,17 @@ export default function AdminPage() {
   useEffect(() => {
     fetch("/api/stats")
       .then((res) => res.json())
-      .then((data) => {
-        setStats({
-          totalPosts: data.totalPosts ?? 0,
-          totalCategories: data.totalCategories ?? 0,
-          totalTags: data.totalTags ?? 0,
-          totalViews: data.totalViews ?? 0,
-        });
-        setRecentPosts(data.recentPosts ?? []);
+      .then((res) => {
+        const data = res.data;
+        if (data) {
+          setStats({
+            totalPosts: data.totalPosts ?? 0,
+            totalCategories: data.totalCategories ?? 0,
+            totalTags: data.totalTags ?? 0,
+            totalViews: data.totalViews ?? 0,
+          });
+          setRecentPosts(data.recentPosts ?? []);
+        }
       });
   }, []);
 

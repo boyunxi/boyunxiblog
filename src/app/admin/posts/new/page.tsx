@@ -54,10 +54,10 @@ export default function NewPostPage() {
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
-      .then((data) => setCategories(data.categories ?? data ?? []));
+      .then((data) => setCategories(data.data ?? []));
     fetch("/api/tags")
       .then((res) => res.json())
-      .then((data) => setTags(data.tags ?? data ?? []));
+      .then((data) => setTags(data.data ?? []));
   }, []);
 
   const handleTitleChange = (value: string) => {

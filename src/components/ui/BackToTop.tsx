@@ -26,7 +26,7 @@ export default function BackToTop() {
       }`}
       aria-label="回到顶部"
     >
-      <ArrowUp size={16} className="text-inkGray/60" />
+      <ArrowUp size={16} className="text-[var(--text-muted)]" />
     </button>
   );
 }

@@ -30,7 +30,7 @@ export default function CategoriesPage() {
   const fetchCategories = useCallback(() => {
     fetch("/api/categories")
       .then((res) => res.json())
-      .then((data) => setCategories(data.categories ?? data ?? []));
+      .then((data) => setCategories(data.data ?? []));
   }, []);
 
   useEffect(() => {

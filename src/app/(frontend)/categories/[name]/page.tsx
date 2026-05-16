@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: { params: { name: string 
     return (
       <div className="text-center py-32">
         <div className="rift-line mx-auto animate-gold-breathe mb-8" />
-        <p className="text-pale-ghost font-serif tracking-[0.3em] text-xs">此入口尚无卷宗</p>
+        <p className="text-[var(--text-ghost)] font-serif tracking-[0.3em] text-xs">此入口尚无卷宗</p>
       </div>
     );
   }
@@ -29,14 +29,14 @@ export default async function CategoryPage({ params }: { params: { name: string 
   return (
     <div className="relative">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[25%] right-[20%] w-[350px] h-[200px] rounded-full bg-gold/[0.015] blur-[80px] animate-fog-drift" />
+        <div className="absolute top-[25%] right-[20%] w-[350px] h-[200px] rounded-full blur-[80px] animate-fog-drift" style={{backgroundColor: "rgba(var(--gold-rgb),0.015)"}} />
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-16 relative z-10">
         <header className="text-center mb-20">
           <div className="rift-line animate-rift-glow mb-10" />
-          <span className="text-pale-ghost text-[10px] tracking-[0.5em] font-serif block mb-4">世界入口</span>
-          <h1 className="font-serif text-3xl text-pale tracking-[0.2em] gold-text-glow">{category.name}</h1>
+          <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.5em] font-serif block mb-4">世界入口</span>
+          <h1 className="font-serif text-3xl text-[var(--text)] tracking-[0.2em] gold-text-glow">{category.name}</h1>
           <div className="rift-line animate-rift-glow mt-10" style={{ animationDelay: "-2s" }} />
         </header>
 
@@ -49,14 +49,14 @@ export default async function CategoryPage({ params }: { params: { name: string 
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <h2 className="font-serif text-pale text-base tracking-wider mb-2 hover:text-gold-light transition-colors duration-500">
+                  <h2 className="font-serif text-[var(--text)] text-base tracking-wider mb-2 hover:text-[var(--gold)] transition-colors duration-500">
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p className="text-pale-muted text-sm line-clamp-2">{post.excerpt}</p>
+                    <p className="text-[var(--text-muted)] text-sm line-clamp-2">{post.excerpt}</p>
                   )}
                 </div>
-                <ArrowRight size={12} className="text-pale-ghost shrink-0" />
+                <ArrowRight size={12} className="text-[var(--text-ghost)] shrink-0" />
               </div>
             </Link>
           ))}
@@ -65,7 +65,7 @@ export default async function CategoryPage({ params }: { params: { name: string 
         {posts.length === 0 && (
           <div className="text-center py-20">
             <div className="rift-line mx-auto animate-gold-breathe mb-8" />
-            <p className="text-pale-ghost font-serif tracking-[0.3em] text-xs">此入口尚无卷宗</p>
+            <p className="text-[var(--text-ghost)] font-serif tracking-[0.3em] text-xs">此入口尚无卷宗</p>
           </div>
         )}
       </div>

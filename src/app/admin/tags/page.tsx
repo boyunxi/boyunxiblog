@@ -19,7 +19,7 @@ export default function TagsPage() {
   const fetchTags = useCallback(() => {
     fetch("/api/tags")
       .then((res) => res.json())
-      .then((data) => setTags(data.tags ?? data ?? []));
+      .then((data) => setTags(data.data ?? []));
   }, []);
 
   useEffect(() => {
