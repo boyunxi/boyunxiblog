@@ -69,6 +69,7 @@ model SiteSetting {
   githubUrl       String?
   copyrightText   String?  @default("薄云隙 · 数字古风档案馆")
   icpNumber       String?
+  policeNumber    String?
   seoTitle        String?
   seoDescription  String?
   seoKeywords     String?
