@@ -1,6 +1,28 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
+import { JetBrains_Mono, Noto_Serif_SC, Noto_Sans_SC } from "next/font/google";
 import { prisma } from "@/lib/prisma";
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+const notoSerifSC = Noto_Serif_SC({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "900"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
+const notoSansSC = Noto_Sans_SC({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "500"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 async function getSettings() {
   try {
@@ -40,8 +62,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
-      <body className="bg-void font-sans min-h-screen">{children}</body>
+    <html lang="zh-CN" className={`${jetbrainsMono.variable} ${notoSerifSC.variable} ${notoSansSC.variable}`}>
+      <body className="bg-void min-h-screen" style={{ fontFamily: 'var(--font-sans), "Noto Sans SC", sans-serif' }}>{children}</body>
     </html>
   );
 }
