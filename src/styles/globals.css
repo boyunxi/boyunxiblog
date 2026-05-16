@@ -37,10 +37,10 @@
     --bg-deep: #F0ECE2;
     --bg-mid: #F5F1E8;
     --bg-light: #E8E2D4;
-    --text: rgba(26,26,26,0.85);
-    --text-soft: rgba(26,26,26,0.6);
-    --text-muted: rgba(26,26,26,0.4);
-    --text-ghost: rgba(26,26,26,0.18);
+    --text: rgba(26,26,26,0.92);
+    --text-soft: rgba(26,26,26,0.75);
+    --text-muted: rgba(26,26,26,0.55);
+    --text-ghost: rgba(26,26,26,0.32);
     --gold: #B8960F;
     --gold-rgb: 184,150,15;
     --gold-glow: rgba(184,150,15,0.12);

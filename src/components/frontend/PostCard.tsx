@@ -9,8 +9,8 @@ export default function PostCard({ post, featured = false }: { post: Post; featu
       <div className="flex items-center gap-2 mb-3">
         {post.category && <span className="gold-tag">{post.category.name}</span>}
       </div>
-      <h2 className="font-serif text-pale text-lg tracking-wider mb-2 hover:text-gold-light transition-colors duration-500">{post.title}</h2>
-      {post.excerpt && <p className="text-pale-muted text-sm line-clamp-2">{post.excerpt}</p>}
+      <h2 className="font-serif text-[var(--text)] text-lg tracking-wider mb-2 hover:text-gold-light transition-colors duration-500">{post.title}</h2>
+      {post.excerpt && <p className="text-[var(--text-muted)] text-sm line-clamp-2">{post.excerpt}</p>}
     </Link>
   );
 }
