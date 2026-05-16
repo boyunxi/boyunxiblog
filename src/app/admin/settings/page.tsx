@@ -17,6 +17,7 @@ interface Settings {
   githubUrl: string;
   copyrightText: string;
   icpNumber: string;
+  policeNumber: string;
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string;
@@ -37,6 +38,7 @@ const defaultSettings: Settings = {
   githubUrl: "",
   copyrightText: "薄云隙 · 数字古风档案馆",
   icpNumber: "",
+  policeNumber: "",
   seoTitle: "",
   seoDescription: "",
   seoKeywords: "",
@@ -261,6 +263,16 @@ export default function SettingsPage() {
               onChange={(e) => updateField("icpNumber", e.target.value)}
               className={inputClass}
               placeholder="京ICP备XXXXXXXX号"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>公安备案号</label>
+            <input
+              type="text"
+              value={settings.policeNumber}
+              onChange={(e) => updateField("policeNumber", e.target.value)}
+              className={inputClass}
+              placeholder="京公网安备XXXXXXXXXXXX号"
             />
           </div>
         </div>

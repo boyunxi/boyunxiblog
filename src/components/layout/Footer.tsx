@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function Footer() {
   const [siteName, setSiteName] = useState("薄云隙");
@@ -8,6 +9,7 @@ export default function Footer() {
   const [logoText, setLogoText] = useState("隙");
   const [copyrightText, setCopyrightText] = useState("薄云隙 · 数字古风档案馆");
   const [icpNumber, setIcpNumber] = useState("");
+  const [policeNumber, setPoliceNumber] = useState("");
 
   useEffect(() => {
     fetch("/api/settings")
@@ -19,6 +21,7 @@ export default function Footer() {
           setLogoText(data.data.logoText || "隙");
           setCopyrightText(data.data.copyrightText || "薄云隙 · 数字古风档案馆");
           setIcpNumber(data.data.icpNumber || "");
+          setPoliceNumber(data.data.policeNumber || "");
         }
       })
       .catch(() => {});
@@ -33,15 +36,39 @@ export default function Footer() {
         <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.4em] font-serif">{siteDescription}</span>
         <div className="w-16 my-4"><div className="rift-horizontal" /></div>
         <p className="text-[var(--text-ghost)] opacity-50 text-[10px] tracking-wider">&copy; {new Date().getFullYear()} {copyrightText}</p>
-        {icpNumber && (
-          <a
-            href="https://beian.miit.gov.cn"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[var(--text-ghost)] opacity-40 text-[10px] tracking-wider hover:opacity-60 transition-opacity"
-          >
-            {icpNumber}
-          </a>
+        {(icpNumber || policeNumber) && (
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+            {icpNumber && (
+              <a
+                href="https://beian.miit.gov.cn/"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[var(--text-ghost)] opacity-40 text-[10px] tracking-wider hover:opacity-60 transition-opacity"
+              >
+                {icpNumber}
+              </a>
+            )}
+            {icpNumber && policeNumber && (
+              <span className="hidden sm:inline text-[var(--text-ghost)] opacity-20 text-[10px]">|</span>
+            )}
+            {policeNumber && (
+              <a
+                href={`https://beian.mps.gov.cn/#/query/webSearch?code=${encodeURIComponent(policeNumber)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-[var(--text-ghost)] opacity-40 text-[10px] tracking-wider hover:opacity-60 transition-opacity"
+              >
+                <Image
+                  src="/images/beian-icon.png"
+                  alt=""
+                  width={14}
+                  height={14}
+                  className="opacity-60"
+                />
+                {policeNumber}
+              </a>
+            )}
+          </div>
         )}
       </div>
     </footer>
