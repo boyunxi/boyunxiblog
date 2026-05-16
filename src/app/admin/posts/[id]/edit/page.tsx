@@ -58,6 +58,7 @@ export default function EditPostPage() {
   const [showDelete, setShowDelete] = useState(false);
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Image,

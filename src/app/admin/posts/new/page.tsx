@@ -41,6 +41,7 @@ export default function NewPostPage() {
   const [tags, setTags] = useState<TagItem[]>([]);
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Image,
