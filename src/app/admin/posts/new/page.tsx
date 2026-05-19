@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RefreshCw, ImageIcon, Bold, Italic, Heading1, Heading2, List, LinkIcon, Quote, Code, ImagePlus, Eye, Edit2 } from "lucide-react";
+import AdminPageHeader from "@/components/ui/AdminPageHeader";
 
 interface Category {
   id: number;
@@ -94,7 +95,7 @@ export default function NewPostPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-serif text-ink">新建文章</h1>
+      <AdminPageHeader title="新建文章" />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>

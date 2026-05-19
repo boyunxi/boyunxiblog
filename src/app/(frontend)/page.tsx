@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { transformPost } from "@/lib/types";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import PostCard from "@/components/frontend/PostCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default async function HomePage() {
   const [posts, categories, settings] = await Promise.all([
@@ -25,14 +26,12 @@ export default async function HomePage() {
 
   return (
     <div className="relative">
-      {/* 雾气层 */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[10%] left-[20%] w-[500px] h-[300px] rounded-full blur-[100px] animate-fog-drift" style={{backgroundColor: "rgba(var(--gold-rgb),0.02)"}} />
         <div className="absolute top-[50%] right-[10%] w-[400px] h-[250px] rounded-full blur-[80px] animate-fog-drift-slow" style={{backgroundColor: "rgba(var(--gold-rgb),0.015)"}} />
         <div className="absolute bottom-[20%] left-[40%] w-[350px] h-[200px] rounded-full blur-[90px] animate-fog-drift" style={{backgroundColor: "rgba(var(--fog-white),0.01)", animationDelay: "-8s"}} />
       </div>
 
-      {/* 粒子 */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
@@ -48,9 +47,7 @@ export default async function HomePage() {
         ))}
       </div>
 
-      {/* Hero 区域 - 云层裂隙 */}
       <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6">
-        {/* 裂隙光柱 */}
         <div className="rift-line animate-rift-glow mb-8" />
 
         <h1
@@ -67,10 +64,8 @@ export default async function HomePage() {
           {heroSubtitle}
         </p>
 
-        {/* 裂隙下光 */}
         <div className="rift-line animate-rift-glow mt-8" style={{ animationDelay: "-2s" }} />
 
-        {/* 世界入口导航 */}
         <nav
           className="flex flex-wrap justify-center gap-4 mt-16 opacity-0 animate-fade-up"
           style={{ animationDelay: "1.1s" }}
@@ -88,8 +83,7 @@ export default async function HomePage() {
         </nav>
       </section>
 
-      {/* 云海档案馆 - 漂浮文章 */}
-      <section className="relative max-w-4xl mx-auto px-6 pb-32">
+      <section className="relative max-w-page mx-auto px-6 pb-32">
         <div className="rift-horizontal mb-16" />
 
         <div
@@ -99,43 +93,19 @@ export default async function HomePage() {
           <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.5em] font-serif">{archiveLabel}</span>
         </div>
 
-        <div className="space-y-6">
-          {transformedPosts.map((post, index) => (
-            <Link
-              key={post.id}
-              href={`/posts/${post.slug}`}
-              className="scroll-vessel incomplete-border block p-6 md:p-8 opacity-0 animate-fade-up"
-              style={{ animationDelay: `${0.1 * index + 0.3}s` }}
-            >
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-3">
-                    {post.category && (
-                      <span className="gold-tag">{post.category.name}</span>
-                    )}
-                    <span className="text-[var(--text-ghost)] text-[10px] tracking-wider">
-                      {new Date(post.createdAt).getFullYear()}.{String(new Date(post.createdAt).getMonth() + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <h2 className="font-serif text-[var(--text)] text-lg md:text-xl tracking-wider mb-3 text-balance hover:text-[var(--gold)] transition-colors duration-500">
-                    {post.title}
-                  </h2>
-                  {post.excerpt && (
-                    <p className="text-[var(--text-muted)] text-sm leading-relaxed line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                  )}
-                </div>
-                <ArrowRight size={14} className="text-[var(--text-ghost)] mt-2 shrink-0 group-hover:text-[rgba(var(--gold-rgb),0.5)] transition-colors" />
+        {transformedPosts.length === 0 ? (
+          <EmptyState text={emptyStateText} />
+        ) : (
+          <div className="space-y-6">
+            {transformedPosts.map((post, index) => (
+              <div
+                key={post.id}
+                className="opacity-0 animate-fade-up"
+                style={{ animationDelay: `${0.1 * index + 0.3}s` }}
+              >
+                <PostCard post={post} variant="hero" />
               </div>
-            </Link>
-          ))}
-        </div>
-
-        {transformedPosts.length === 0 && (
-          <div className="text-center py-24">
-            <div className="rift-line mx-auto mb-8 animate-gold-breathe" />
-            <p className="text-[var(--text-ghost)] text-sm font-serif tracking-[0.3em]">{emptyStateText}</p>
+            ))}
           </div>
         )}
       </section>

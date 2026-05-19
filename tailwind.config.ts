@@ -50,6 +50,7 @@ const config: Config = {
       },
       maxWidth: {
         content: "640px",
+        page: "48rem",
       },
       animation: {
         "fade-up": "fadeUp 0.8s ease-out forwards",

@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FileText, FolderOpen, Tag, Eye, Plus, List } from "lucide-react";
 import ScrollCard from "@/components/ui/ScrollCard";
+import AdminPageHeader from "@/components/ui/AdminPageHeader";
+import AdminButton from "@/components/ui/AdminButton";
+import AdminTable, { AdminTableHeader, AdminTableHeaderCell, AdminTableRow, AdminTableCell } from "@/components/ui/AdminTable";
+import AdminBadge from "@/components/ui/AdminBadge";
 
 interface Stats {
   totalPosts: number;
@@ -56,7 +60,21 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-serif text-ink">欢迎回来</h1>
+      <AdminPageHeader
+        title="欢迎回来"
+        action={
+          <div className="flex gap-3">
+            <AdminButton onClick={() => router.push("/admin/posts/new")}>
+              <Plus className="w-4 h-4" />
+              新建文章
+            </AdminButton>
+            <AdminButton variant="secondary" onClick={() => router.push("/admin/categories")}>
+              <List className="w-4 h-4" />
+              管理分类
+            </AdminButton>
+          </div>
+        }
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
@@ -72,67 +90,40 @@ export default function AdminPage() {
         ))}
       </div>
 
-      <div className="flex gap-4">
-        <button
-          onClick={() => router.push("/admin/posts/new")}
-          className="flex items-center gap-2 px-5 py-2.5 bg-ink text-ricepaper rounded-sm hover:bg-ink/90 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          新建文章
-        </button>
-        <button
-          onClick={() => router.push("/admin/categories")}
-          className="flex items-center gap-2 px-5 py-2.5 border border-ink/30 text-ink rounded-sm hover:bg-ink/5 transition-colors"
-        >
-          <List className="w-4 h-4" />
-          管理分类
-        </button>
-      </div>
-
       <div>
         <h2 className="text-xl font-serif text-ink mb-4">最近文章</h2>
-        <div className="scroll-card overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-ink/10 bg-ricepaper/50">
-                <th className="text-left px-4 py-3 text-sm font-serif text-ink">标题</th>
-                <th className="text-left px-4 py-3 text-sm font-serif text-ink">状态</th>
-                <th className="text-left px-4 py-3 text-sm font-serif text-ink">日期</th>
-                <th className="text-left px-4 py-3 text-sm font-serif text-ink">浏览量</th>
+        <AdminTable>
+          <AdminTableHeader>
+            <AdminTableHeaderCell>标题</AdminTableHeaderCell>
+            <AdminTableHeaderCell>状态</AdminTableHeaderCell>
+            <AdminTableHeaderCell>日期</AdminTableHeaderCell>
+            <AdminTableHeaderCell>浏览量</AdminTableHeaderCell>
+          </AdminTableHeader>
+          <tbody>
+            {recentPosts.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center py-8 text-inkGray/60">
+                  暂无文章
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {recentPosts.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="text-center py-8 text-inkGray/60">
-                    暂无文章
-                  </td>
-                </tr>
-              ) : (
-                recentPosts.map((post) => (
-                  <tr key={post.id} className="border-b border-ink/5 hover:bg-ricepaper/30">
-                    <td className="px-4 py-3 text-inkGray">{post.title}</td>
-                    <td className="px-4 py-3">
-                      {post.published ? (
-                        <span className="inline-block px-2 py-0.5 text-xs bg-ink/10 text-ink rounded-sm">
-                          已发布
-                        </span>
-                      ) : (
-                        <span className="inline-block px-2 py-0.5 text-xs bg-ochre/10 text-ochre rounded-sm">
-                          草稿
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-inkGray/70 text-sm">
-                      {new Date(post.createdAt).toLocaleDateString("zh-CN")}
-                    </td>
-                    <td className="px-4 py-3 text-inkGray/70">{post.views}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+            ) : (
+              recentPosts.map((post) => (
+                <AdminTableRow key={post.id}>
+                  <AdminTableCell className="text-inkGray">{post.title}</AdminTableCell>
+                  <AdminTableCell>
+                    <AdminBadge variant={post.published ? "default" : "warning"}>
+                      {post.published ? "已发布" : "草稿"}
+                    </AdminBadge>
+                  </AdminTableCell>
+                  <AdminTableCell>
+                    {new Date(post.createdAt).toLocaleDateString("zh-CN")}
+                  </AdminTableCell>
+                  <AdminTableCell>{post.views}</AdminTableCell>
+                </AdminTableRow>
+              ))
+            )}
+          </tbody>
+        </AdminTable>
       </div>
     </div>
   );

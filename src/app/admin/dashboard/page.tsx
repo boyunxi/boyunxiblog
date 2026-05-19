@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { FileText, FolderOpen, Tag, Eye } from "lucide-react";
 import ScrollCard from "@/components/ui/ScrollCard";
+import AdminPageHeader from "@/components/ui/AdminPageHeader";
 
 interface Stats {
   totalPosts: number;
@@ -48,7 +49,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-serif text-ink">数据看板</h1>
+      <AdminPageHeader title="数据看板" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card) => (
