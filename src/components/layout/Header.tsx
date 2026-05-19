@@ -41,10 +41,14 @@ export default function Header() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
+  const handleLogoClick = () => {
+    window.dispatchEvent(new CustomEvent("logo-click"));
+  };
+
   return (
     <header className={`w-full sticky top-0 z-50 transition-all duration-700 ${scrolled ? "bg-[var(--bg)]/80 backdrop-blur-md" : ""}`}>
       <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" data-logo onClick={handleLogoClick} className="flex items-center gap-3 group">
           <span className="w-7 h-7 rounded-full border border-[rgba(var(--gold-rgb),0.2)] flex items-center justify-center text-[var(--gold)] text-xs font-serif group-hover:border-[rgba(var(--gold-rgb),0.4)] transition-all duration-500">{logoText}</span>
           <span className="font-serif text-[var(--text-soft)] text-sm tracking-[0.2em] group-hover:text-[var(--text)] transition-colors duration-500">{siteName}</span>
         </Link>
