@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { RefreshCw, ImageIcon, Bold, Italic, Heading1, Heading2, List, LinkIcon, Quote, Code, ImagePlus, Trash2, Eye, Edit2 } from "lucide-react";
+import AdminPageHeader from "@/components/ui/AdminPageHeader";
+import AdminButton from "@/components/ui/AdminButton";
+import AdminConfirmDialog from "@/components/ui/AdminConfirmDialog";
 
 interface Category {
   id: number;
@@ -136,17 +139,15 @@ export default function EditPostPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-serif text-ink">编辑文章</h1>
-        <button
-          type="button"
-          onClick={() => setShowDelete(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-ochre hover:bg-ochre/5 rounded-sm transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-          删除
-        </button>
-      </div>
+      <AdminPageHeader
+        title="编辑文章"
+        action={
+          <AdminButton variant="danger" onClick={() => setShowDelete(true)}>
+            <Trash2 className="w-4 h-4" />
+            删除
+          </AdminButton>
+        }
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -355,28 +356,13 @@ export default function EditPostPage() {
         </div>
       </form>
 
-      {showDelete && (
-        <div className="fixed inset-0 bg-ink/30 flex items-center justify-center z-50">
-          <div className="bg-ricepaper p-6 rounded-sm shadow-lg max-w-sm w-full mx-4">
-            <h3 className="font-serif text-ink text-lg mb-3">确认删除</h3>
-            <p className="text-inkGray text-sm mb-6">确定要删除这篇文章吗？此操作不可撤销。</p>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowDelete(false)}
-                className="px-4 py-2 border border-ink/20 text-inkGray rounded-sm hover:bg-ink/5 transition-colors"
-              >
-                取消
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-ochre text-ricepaper rounded-sm hover:bg-ochre/90 transition-colors"
-              >
-                删除
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AdminConfirmDialog
+        open={showDelete}
+        title="确认删除"
+        message="确定要删除这篇文章吗？此操作不可撤销。"
+        onConfirm={handleDelete}
+        onCancel={() => setShowDelete(false)}
+      />
     </div>
   );
 }
