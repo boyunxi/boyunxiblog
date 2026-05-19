@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, Timer } from "lucide-react";
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  if (m > 0) return `${m}分${s}秒`;
+  return `${s}秒`;
+}
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -11,9 +18,44 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [lockoutEnd, setLockoutEnd] = useState<number>(0);
+  const [countdown, setCountdown] = useState(0);
+
+  const checkLockout = useCallback(async () => {
+    try {
+      const res = await fetch("/api/auth/lockout-status");
+      const data = await res.json();
+      if (data.locked && data.remainingMs > 0) {
+        setLockoutEnd(Date.now() + data.remainingMs);
+        return true;
+      }
+    } catch {}
+    setLockoutEnd(0);
+    return false;
+  }, []);
+
+  useEffect(() => {
+    checkLockout();
+  }, [checkLockout]);
+
+  useEffect(() => {
+    if (!lockoutEnd) {
+      setCountdown(0);
+      return;
+    }
+    const update = () => {
+      const remaining = Math.max(0, Math.ceil((lockoutEnd - Date.now()) / 1000));
+      setCountdown(remaining);
+      if (remaining <= 0) setLockoutEnd(0);
+    };
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, [lockoutEnd]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (countdown > 0) return;
     setError("");
     setLoading(true);
 
@@ -26,11 +68,16 @@ export default function AdminLoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("邮箱或密码错误");
+      const isLocked = await checkLockout();
+      if (!isLocked) {
+        setError("邮箱或密码错误");
+      }
     } else {
       router.push("/admin");
     }
   };
+
+  const isLocked = countdown > 0;
 
   return (
     <div className="min-h-screen bg-ricepaper flex items-center justify-center relative overflow-hidden">
@@ -51,7 +98,14 @@ export default function AdminLoginPage() {
             <p className="text-inkGray text-sm">管理后台登录</p>
           </div>
 
-          {error && (
+          {isLocked && (
+            <div className="mb-4 p-3 bg-ink/10 border border-ink/30 text-ink text-sm rounded-sm text-center flex items-center justify-center gap-2">
+              <Timer size={16} />
+              <span>登录尝试过多，请 {formatTime(countdown)} 后重试</span>
+            </div>
+          )}
+
+          {!isLocked && error && (
             <div className="mb-4 p-3 bg-ochre/10 border border-ochre/30 text-ochre text-sm rounded-sm text-center">
               {error}
             </div>
@@ -69,7 +123,8 @@ export default function AdminLoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="邮箱"
                 required
-                className="w-full pl-10 pr-4 py-3 bg-cloudWhite border border-ink/20 rounded-sm text-ink text-sm placeholder:text-inkGray/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/50 transition-colors"
+                disabled={isLocked}
+                className="w-full pl-10 pr-4 py-3 bg-cloudWhite border border-ink/20 rounded-sm text-ink text-sm placeholder:text-inkGray/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/50 transition-colors disabled:opacity-50"
               />
             </div>
 
@@ -84,16 +139,17 @@ export default function AdminLoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="密码"
                 required
-                className="w-full pl-10 pr-4 py-3 bg-cloudWhite border border-ink/20 rounded-sm text-ink text-sm placeholder:text-inkGray/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/50 transition-colors"
+                disabled={isLocked}
+                className="w-full pl-10 pr-4 py-3 bg-cloudWhite border border-ink/20 rounded-sm text-ink text-sm placeholder:text-inkGray/40 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/50 transition-colors disabled:opacity-50"
               />
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || isLocked}
               className="w-full py-3 bg-ink text-ricepaper text-sm rounded-sm border border-gold/50 hover:bg-ochre transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "登录中..." : "登录"}
+              {loading ? "登录中..." : isLocked ? `请等待 ${formatTime(countdown)}` : "登录"}
             </button>
           </form>
         </div>
