@@ -54,6 +54,22 @@ model PostTag {
   @@id([postId, tagId])
 }
 
+model Log {
+  id         Int      @id @default(autoincrement())
+  level      String   @default("info")
+  category   String
+  action     String
+  message    String
+  meta       String?
+  ip         String?
+  userId     Int?
+  createdAt  DateTime @default(now())
+
+  @@index([category])
+  @@index([level])
+  @@index([createdAt])
+}
+
 model SiteSetting {
   id              Int      @id @default(1)
   siteName        String   @default("薄云隙")
@@ -74,5 +90,14 @@ model SiteSetting {
   seoDescription  String?
   seoKeywords     String?
   aboutContent    String?
+  easterEggLogoEnabled    Boolean  @default(true)
+  easterEggLogoClicks     Int      @default(5)
+  easterEggLogoText       String?  @default("云深不知处,只在此山中,欲穷千里目,更上一层楼,海内存知己,天涯若比邻")
+  easterEggLogoDuration   Int      @default(3)
+  easterEggConsoleEnabled Boolean  @default(true)
+  easterEggConsoleText    String?  @default("欢迎来到薄云隙 · 窥见世界裂隙")
+  easterEggKonamiEnabled  Boolean  @default(true)
+  easterEggKonamiText     String?  @default("道可道，非常道。名可名，非常名。")
+  easterEggSearchHello    String?  @default("你好，有缘人！既然寻到了此处，便留下吧。")
   updatedAt       DateTime @updatedAt
 }

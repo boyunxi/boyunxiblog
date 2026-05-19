@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { generateSlug } from "@/lib/utils";
+import { withLog } from "@/lib/with-log";
 
-export async function PUT(
-  request: NextRequest,
+export const PUT = withLog(async (
+  request,
   { params }: { params: { id: string } }
-) {
+) => {
   try {
+    const { getServerSession } = await import("next-auth");
+    const { authOptions } = await import("@/lib/auth");
+    const { generateSlug } = await import("@/lib/utils");
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== "admin") {
       return NextResponse.json(
@@ -33,13 +34,15 @@ export async function PUT(
       { status: 500 }
     );
   }
-}
+});
 
-export async function DELETE(
-  request: NextRequest,
+export const DELETE = withLog(async (
+  request,
   { params }: { params: { id: string } }
-) {
+) => {
   try {
+    const { getServerSession } = await import("next-auth");
+    const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
     if (!session?.user || (session.user as Record<string, unknown>).role !== "admin") {
       return NextResponse.json(
@@ -57,4 +60,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+});
