@@ -15,12 +15,20 @@ export default function SearchBar() {
     }
   };
 
+  const handleChange = (value: string) => {
+    setQuery(value);
+    const lower = value.trim().toLowerCase();
+    if (lower === "hello" || lower === "你好") {
+      window.dispatchEvent(new CustomEvent("search-easter-egg", { detail: lower }));
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
       <input
         type="text"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => handleChange(e.target.value)}
         placeholder="寻章摘句..."
         className="w-full bg-transparent border-b border-[rgba(var(--gold-rgb),0.1)] font-serif text-[var(--text)] placeholder:text-[var(--text-ghost)] py-3 pr-10 focus:outline-none transition-colors duration-500 focus:border-[rgba(var(--gold-rgb),0.3)] rounded-none"
       />

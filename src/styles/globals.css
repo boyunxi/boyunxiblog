@@ -403,3 +403,145 @@
 [data-theme="day"]::view-transition-new(root) {
   z-index: 1;
 }
+
+.easter-egg-falling {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+.easter-egg-fall-item {
+  position: absolute;
+  top: -60px;
+  font-family: var(--font-serif), "Noto Serif SC", serif;
+  font-size: 1.25rem;
+  color: rgba(var(--gold-rgb), 0.7);
+  text-shadow: 0 0 20px rgba(var(--gold-rgb), 0.3);
+  animation: easter-fall linear forwards;
+  white-space: nowrap;
+}
+@keyframes easter-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(calc(100vh + 60px)) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+.easter-egg-konami {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--bg-deep), 0.85);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  animation: easter-konami-in 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes easter-konami-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.easter-egg-ripple {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--gold-rgb), 0.3);
+  animation: easter-ripple 2s ease-out infinite;
+}
+.easter-egg-ripple-2 {
+  animation-delay: 0.6s;
+}
+.easter-egg-ripple-3 {
+  animation-delay: 1.2s;
+}
+@keyframes easter-ripple {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+.easter-egg-konami-text {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-serif), "Noto Serif SC", serif;
+  font-size: 1.5rem;
+  color: rgba(var(--gold-rgb), 0.9);
+  text-shadow: 0 0 30px rgba(var(--gold-rgb), 0.3), 0 0 60px rgba(var(--gold-rgb), 0.1);
+  letter-spacing: 0.2em;
+  animation: easter-konami-text-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+@keyframes easter-konami-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.easter-egg-search {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--bg-deep), 0.7);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  animation: easter-search-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes easter-search-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.easter-egg-search-inner {
+  text-align: center;
+  padding: 3rem 4rem;
+  border: 1px solid rgba(var(--gold-rgb), 0.15);
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  animation: easter-search-card-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+@keyframes easter-search-card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.easter-egg-search-icon {
+  display: block;
+  font-size: 2rem;
+  color: rgba(var(--gold-rgb), 0.8);
+  margin-bottom: 1rem;
+  animation: easter-search-icon-pulse 2s ease-in-out infinite;
+}
+@keyframes easter-search-icon-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+.easter-egg-search-text {
+  font-family: var(--font-serif), "Noto Serif SC", serif;
+  font-size: 1.1rem;
+  color: var(--text-soft);
+  letter-spacing: 0.15em;
+  line-height: 2;
+}
