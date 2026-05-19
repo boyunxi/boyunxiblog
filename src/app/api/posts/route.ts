@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { withLog } from "@/lib/with-log";
 
-export async function GET(request: NextRequest) {
+export const GET = withLog(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
@@ -38,10 +37,12 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withLog(async (request: NextRequest) => {
   try {
+    const { getServerSession } = await import("next-auth");
+    const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== "admin") {
       return NextResponse.json(
@@ -76,4 +77,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

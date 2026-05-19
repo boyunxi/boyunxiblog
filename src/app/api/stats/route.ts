@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { withLog } from "@/lib/with-log";
 
-export async function GET() {
+export const GET = withLog(async () => {
   try {
+    const { getServerSession } = await import("next-auth");
+    const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== "admin") {
       return NextResponse.json(
@@ -109,4 +110,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});

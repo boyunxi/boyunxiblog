@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Eye, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import MdxRenderer from "@/lib/mdx-renderer";
+import { logger } from "@/lib/logger";
 
 export async function generateStaticParams() {
   const posts = await prisma.post.findMany({
@@ -33,6 +34,13 @@ export default async function PostPage({ params }: { params: { slug: string } })
   await prisma.post.update({
     where: { id: post.id },
     data: { views: { increment: 1 } },
+  });
+
+  void logger.info({
+    category: "view",
+    action: "post_view",
+    message: `阅读: ${post.title}`,
+    meta: { postId: post.id, slug: post.slug },
   });
 
   const [prevPost, nextPost] = await Promise.all([

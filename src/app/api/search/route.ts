@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { withLog } from "@/lib/with-log";
+import { logger } from "@/lib/logger";
 
-export async function GET(request: NextRequest) {
+export const GET = withLog(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const q = searchParams.get("q");
@@ -25,6 +27,14 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
+    void logger.info({
+      category: "view",
+      action: "search",
+      message: `搜索: "${q}" 找到 ${posts.length} 篇`,
+      meta: { query: q, results: posts.length },
+      ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown",
+    });
+
     return NextResponse.json({ success: true, data: posts });
   } catch (error) {
     return NextResponse.json(
@@ -32,4 +42,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
