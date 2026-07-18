@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FileText, FolderOpen, Tag, Eye } from "lucide-react";
-import ScrollCard from "@/components/ui/ScrollCard";
+import AdminCard from "@/components/ui/AdminCard";
 import AdminPageHeader from "@/components/ui/AdminPageHeader";
 
 interface Stats {
@@ -53,7 +53,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card) => (
-          <ScrollCard key={card.label}>
+          <AdminCard key={card.label} className="p-5">
             <div className="flex items-center gap-4">
               <card.icon className={`w-10 h-10 ${card.color}/60`} />
               <div>
@@ -61,12 +61,12 @@ export default function DashboardPage() {
                 <p className="text-sm text-inkGray">{card.label}</p>
               </div>
             </div>
-          </ScrollCard>
+          </AdminCard>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="scroll-card p-6">
+        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
           <h2 className="text-lg font-serif text-ink mb-6">文章发布趋势</h2>
           <div className="flex items-end gap-3 h-48">
             {stats.postsByMonth.map((d) => (
@@ -82,7 +82,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="scroll-card p-6">
+        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
           <h2 className="text-lg font-serif text-ink mb-6">浏览量趋势</h2>
           <svg viewBox="0 0 300 160" className="w-full h-48">
             {stats.viewsByMonth.length > 1 && (
@@ -119,7 +119,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="scroll-card p-6">
+        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
           <h2 className="text-lg font-serif text-ink mb-6">分类分布</h2>
           <div className="space-y-3">
             {stats.categoryDistribution.map((d) => (
@@ -140,7 +140,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="scroll-card p-6">
+        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
           <h2 className="text-lg font-serif text-ink mb-6">热门文章排行</h2>
           <div className="space-y-3">
             {stats.topPosts.map((post, index) => (

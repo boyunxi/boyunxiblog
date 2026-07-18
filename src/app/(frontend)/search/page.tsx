@@ -30,7 +30,7 @@ function SearchContent() {
 
   return (
     <PageShell>
-      <PageHeader title="寻章摘句" subtitle="于卷宗中寻觅" />
+      <PageHeader title="搜索文章" subtitle="按标题和内容查找" />
 
       <div className="max-w-md mx-auto mb-16">
         <SearchBar />
@@ -48,13 +48,13 @@ function SearchContent() {
               搜索中...
             </span>
           ) : (
-            <>于档案馆中寻得 <span style={{color: "rgba(var(--gold-rgb),0.6)"}}>{results.length}</span> 卷宗</>
+            <>找到 <span style={{color: "rgba(var(--gold-rgb),0.8)"}}>{results.length}</span> 篇文章</>
           )}
         </p>
       )}
 
       {!query && (
-        <EmptyState text="输入关键词，开始寻觅" />
+        <EmptyState text="输入关键词开始搜索" />
       )}
 
       <div className="space-y-4">

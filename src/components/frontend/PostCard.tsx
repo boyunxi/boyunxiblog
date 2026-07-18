@@ -26,11 +26,11 @@ export default function PostCard({
     return (
       <Link
         href={`/posts/${post.slug}`}
-        className="scroll-vessel incomplete-border block p-5"
+        className="group scroll-vessel block border-x-0 border-t-0 p-5 md:p-6"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <h3 className="font-serif text-[var(--text-soft)] text-sm tracking-wider mb-1 hover:text-[rgba(var(--gold-rgb),0.7)] transition-colors duration-500 line-clamp-1">
+          <h3 className="font-serif text-[var(--text-soft)] text-sm tracking-wide mb-1 group-hover:text-[var(--text)] transition-colors line-clamp-2">
               {post.title}
             </h3>
             {post.excerpt && (
@@ -39,7 +39,7 @@ export default function PostCard({
               </p>
             )}
           </div>
-          <ArrowRight size={12} className="text-[var(--text-ghost)] shrink-0" />
+          <ArrowRight size={14} className="text-[var(--text-ghost)] shrink-0 transition-transform group-hover:translate-x-1" aria-hidden="true" />
         </div>
       </Link>
     );
@@ -49,17 +49,17 @@ export default function PostCard({
     return (
       <Link
         href={`/posts/${post.slug}`}
-        className="scroll-vessel incomplete-border block p-6 md:p-8"
+        className="group scroll-vessel block p-6 md:p-8"
       >
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-3">
               {post.category && <span className="gold-tag">{post.category.name}</span>}
-              <span className="text-[var(--text-ghost)] text-[10px] tracking-wider">
+              <span className="text-[var(--text-ghost)] text-[10px] tracking-wide">
                 {new Date(post.createdAt).getFullYear()}.{String(new Date(post.createdAt).getMonth() + 1).padStart(2, "0")}
               </span>
             </div>
-            <h2 className="font-serif text-[var(--text)] text-lg md:text-xl tracking-wider mb-3 text-balance hover:text-[var(--gold)] transition-colors duration-500">
+            <h2 className="font-serif text-[var(--text)] text-lg md:text-xl tracking-wide mb-3 text-balance group-hover:text-[var(--gold)] transition-colors">
               {post.title}
             </h2>
             {post.excerpt && (
@@ -68,30 +68,30 @@ export default function PostCard({
               </p>
             )}
           </div>
-          <ArrowRight size={14} className="text-[var(--text-ghost)] mt-2 shrink-0 group-hover:text-[rgba(var(--gold-rgb),0.5)] transition-colors" />
+          <ArrowRight size={15} className="text-[var(--text-ghost)] mt-2 shrink-0 group-hover:text-[var(--gold)] group-hover:translate-x-1 transition-all" aria-hidden="true" />
         </div>
       </Link>
     );
   }
 
   return (
-    <Link
-      href={`/posts/${post.slug}`}
-      className="scroll-vessel incomplete-border block p-6"
+      <Link
+        href={`/posts/${post.slug}`}
+      className="group scroll-vessel block border-x-0 border-t-0 p-6"
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
             {post.category && <span className="gold-tag">{post.category.name}</span>}
           </div>
-          <h2 className="font-serif text-[var(--text)] text-base tracking-wider mb-2 hover:text-[var(--gold)] transition-colors duration-500">
+          <h2 className="font-serif text-[var(--text)] text-base tracking-wide mb-2 group-hover:text-[var(--gold)] transition-colors">
             {post.title}
           </h2>
           {post.excerpt && (
             <p className="text-[var(--text-muted)] text-sm line-clamp-2">{post.excerpt}</p>
           )}
         </div>
-        <ArrowRight size={12} className="text-[var(--text-ghost)] shrink-0" />
+        <ArrowRight size={14} className="text-[var(--text-ghost)] shrink-0 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
       </div>
     </Link>
   );

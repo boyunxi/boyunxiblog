@@ -40,11 +40,11 @@ export default function AdminSidebar() {
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
-      <div className="p-6 border-b border-ink/30">
-        <h1 className="font-serif text-2xl text-gold tracking-wider">
-          墨韵随笔
+      <div className="p-6 border-b border-white/10">
+        <h1 className="font-serif text-xl text-gold tracking-wide">
+          博云隙
         </h1>
-        <p className="text-ricepaper/60 text-sm mt-1">管理后台</p>
+        <p className="text-ricepaper/60 text-xs mt-1 tracking-wide">内容管理</p>
       </div>
 
       <nav className="flex-1 py-4">
@@ -56,7 +56,7 @@ export default function AdminSidebar() {
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-6 py-3 text-sm transition-colors ${
+              className={`flex items-center gap-3 min-h-11 px-6 py-3 text-sm transition-colors ${
                 active
                   ? "bg-ink/80 text-gold border-l-4 border-gold"
                   : "text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper border-l-4 border-transparent"

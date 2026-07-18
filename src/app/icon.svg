@@ -1,5 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="4" fill="#1a1a2e"/>
-  <path d="M6 22 Q10 8 16 16 Q22 24 26 10" stroke="#c8b88a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <circle cx="22" cy="8" r="2.5" fill="#c8b88a" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">博云隙</title>
+  <desc id="desc">深色云层之间的一道暖金色光隙</desc>
+  <defs>
+    <linearGradient id="surface" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#26362f" />
+      <stop offset="1" stop-color="#101916" />
+    </linearGradient>
+    <linearGradient id="light" x1="31" y1="11" x2="38" y2="53" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f5df8b" />
+      <stop offset="0.5" stop-color="#d4af37" />
+      <stop offset="1" stop-color="#9a7610" />
+    </linearGradient>
+    <filter id="softGlow" x="-80%" y="-40%" width="260%" height="180%">
+      <feGaussianBlur stdDeviation="2.2" />
+    </filter>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#surface)" />
+  <path d="M12 43c7-7 13-8 19-3 6 5 12 4 21-3" fill="none" stroke="#dbe4dc" stroke-linecap="round" stroke-width="7" opacity=".16" />
+  <path d="M10 48c8-6 14-6 20-2 7 5 14 3 24-4" fill="none" stroke="#f7f3e8" stroke-linecap="round" stroke-width="5" opacity=".72" />
+  <path d="M14 32c6-6 12-7 18-3 5 4 11 4 18-2" fill="none" stroke="#c5d2c8" stroke-linecap="round" stroke-width="6" opacity=".26" />
+
+  <path d="M34 10c-2 7-3 13-2 18 1 7 5 13 1 25" fill="none" stroke="#d4af37" stroke-linecap="round" stroke-width="8" opacity=".2" filter="url(#softGlow)" />
+  <path d="M34 10c-2 7-3 13-2 18 1 7 5 13 1 25" fill="none" stroke="url(#light)" stroke-linecap="round" stroke-width="2.6" />
+  <circle cx="34" cy="10" r="2.2" fill="#f5df8b" />
 </svg>
