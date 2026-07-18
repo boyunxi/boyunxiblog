@@ -58,23 +58,19 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
   return (
     <article className="relative">
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] right-[15%] w-[400px] h-[250px] rounded-full blur-[80px] animate-fog-drift-slow" style={{backgroundColor: "rgba(var(--gold-rgb),0.015)"}} />
-      </div>
-
       <div className="max-w-content mx-auto px-6 pt-8 pb-32 relative z-10">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-[var(--text-ghost)] hover:text-[rgba(var(--gold-rgb),0.6)] transition-colors duration-500 mb-16 text-xs font-serif tracking-[0.2em]"
         >
           <ArrowLeft size={12} />
-          返回档案馆
+          返回文章列表
         </Link>
 
         <header className="mb-16 text-center">
-          <div className="rift-line animate-rift-glow mb-10" />
+          <div className="w-10 h-px bg-[var(--gold)] mx-auto mb-10 opacity-70" />
 
-          <h1 className="font-serif text-2xl md:text-3xl text-[var(--text)] leading-relaxed tracking-wider mb-8 text-balance gold-text-glow">
+          <h1 className="font-serif text-2xl md:text-3xl text-[var(--text)] leading-relaxed tracking-wide mb-8 text-balance">
             {post.title}
           </h1>
 
@@ -96,16 +92,16 @@ export default async function PostPage({ params }: { params: { slug: string } })
             </span>
           </div>
 
-          <div className="rift-line animate-rift-glow mt-10" style={{ animationDelay: "-2s" }} />
+          <div className="w-16 h-px bg-[var(--border)] mx-auto mt-10" />
         </header>
 
         {post.coverImage && (
-          <div className="mb-16 scroll-vessel overflow-hidden">
+          <div className="mb-16 border border-[var(--border)] overflow-hidden bg-[var(--surface)]">
             <img src={post.coverImage} alt={post.title} className="w-full h-auto" />
           </div>
         )}
 
-        <div className="prose-dark mb-12">
+        <div className="prose-dark mb-16">
           {post.content.trim().startsWith("<") ? (
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           ) : (
@@ -123,12 +119,12 @@ export default async function PostPage({ params }: { params: { slug: string } })
           </div>
         )}
 
-        <div className="rift-horizontal my-16" />
+        <div className="h-px bg-[var(--border)] my-16" />
 
         <nav className="flex justify-between items-start gap-8">
           {prevPost ? (
-            <Link href={`/posts/${prevPost.slug}`} className="scroll-vessel incomplete-border p-5 flex-1 group">
-              <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.2em] font-serif block mb-2">← 上一卷宗</span>
+            <Link href={`/posts/${prevPost.slug}`} className="scroll-vessel p-5 flex-1 group">
+              <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.12em] font-sans block mb-2">← 上一篇</span>
               <span className="text-[var(--text-muted)] text-sm font-serif line-clamp-1 group-hover:text-[rgba(var(--gold-rgb),0.6)] transition-colors duration-500">
                 {prevPost.title}
               </span>
@@ -137,8 +133,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
             <span className="flex-1" />
           )}
           {nextPost ? (
-            <Link href={`/posts/${nextPost.slug}`} className="scroll-vessel incomplete-border p-5 flex-1 text-right group">
-              <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.2em] font-serif block mb-2">下一卷宗 →</span>
+            <Link href={`/posts/${nextPost.slug}`} className="scroll-vessel p-5 flex-1 text-right group">
+              <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.12em] font-sans block mb-2">下一篇 →</span>
               <span className="text-[var(--text-muted)] text-sm font-serif line-clamp-1 group-hover:text-[rgba(var(--gold-rgb),0.6)] transition-colors duration-500">
                 {nextPost.title}
               </span>

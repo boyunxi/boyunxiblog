@@ -39,39 +39,51 @@ function block404() {
   return new NextResponse(null, { status: 404 });
 }
 
+function withSecurityHeaders(response: NextResponse): NextResponse {
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  response.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  if (process.env.NODE_ENV === "production") {
+    response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
+  return response;
+}
+
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const ua = req.headers.get("user-agent") || "";
   const ip = getIp(req);
 
-  if (isBadBot(ua)) return block404();
+  if (isBadBot(ua)) return withSecurityHeaders(block404());
 
   if (isGoodCrawler(ua)) {
     if (!rateLimit(`c:${ip}`, 5, 10_000) || !rateLimit(`cs:${ip}`, 20, 60_000)) {
-      return block404();
+      return withSecurityHeaders(block404());
     }
   } else if (path.startsWith("/api/auth/callback") || path.startsWith("/api/auth/signin")) {
     if (!rateLimit(`a:${ip}`, 5, 10_000) || !rateLimit(`as:${ip}`, 10, 60_000)) {
-      return block404();
+      return withSecurityHeaders(block404());
     }
   } else if (path.startsWith("/api/")) {
     if (!rateLimit(`api:${ip}`, 30, 10_000) || !rateLimit(`apis:${ip}`, 120, 60_000)) {
-      return block404();
+      return withSecurityHeaders(block404());
     }
   } else {
     if (!rateLimit(`p:${ip}`, 20, 10_000) || !rateLimit(`ps:${ip}`, 120, 60_000)) {
-      return block404();
+      return withSecurityHeaders(block404());
     }
   }
 
-  if (path.startsWith("/admin/") && path !== "/admin/login") {
+  if ((path === "/admin" || path.startsWith("/admin/")) && path !== "/admin/login") {
     const token = await getToken({ req });
     if (!token) {
-      return NextResponse.redirect(new URL("/admin/login", req.url));
+      return withSecurityHeaders(NextResponse.redirect(new URL("/admin/login", req.url)));
     }
   }
 
-  return NextResponse.next();
+  return withSecurityHeaders(NextResponse.next());
 }
 
 export const config = {

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FileText, FolderOpen, Tag, Eye, Plus, List } from "lucide-react";
-import ScrollCard from "@/components/ui/ScrollCard";
+import AdminCard from "@/components/ui/AdminCard";
 import AdminPageHeader from "@/components/ui/AdminPageHeader";
 import AdminButton from "@/components/ui/AdminButton";
 import AdminTable, { AdminTableHeader, AdminTableHeaderCell, AdminTableRow, AdminTableCell } from "@/components/ui/AdminTable";
@@ -78,7 +78,7 @@ export default function AdminPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
-          <ScrollCard key={card.label}>
+          <AdminCard key={card.label} className="p-5">
             <div className="flex items-center gap-4">
               <card.icon className="w-8 h-8 text-ink/60" />
               <div>
@@ -86,7 +86,7 @@ export default function AdminPage() {
                 <p className="text-sm text-inkGray">{card.label}</p>
               </div>
             </div>
-          </ScrollCard>
+          </AdminCard>
         ))}
       </div>
 

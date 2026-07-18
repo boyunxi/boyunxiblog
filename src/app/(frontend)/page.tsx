@@ -18,63 +18,42 @@ export default async function HomePage() {
   ]);
 
   const heroTitle = settings?.heroTitle || "薄云隙";
-  const heroSubtitle = settings?.heroSubtitle || "窥见世界裂隙 · 数字古风档案馆";
-  const archiveLabel = settings?.archiveLabel || "云 海 档 案 馆";
-  const emptyStateText = settings?.emptyStateText || "档案馆中尚无卷宗";
+  const heroSubtitle = settings?.heroSubtitle || "记录技术、思考与持续学习";
+  const archiveLabel = settings?.archiveLabel || "最新文章";
+  const emptyStateText = settings?.emptyStateText || "暂无文章";
 
   const transformedPosts = posts.map(transformPost);
 
   return (
     <div className="relative">
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[10%] left-[20%] w-[500px] h-[300px] rounded-full blur-[100px] animate-fog-drift" style={{backgroundColor: "rgba(var(--gold-rgb),0.02)"}} />
-        <div className="absolute top-[50%] right-[10%] w-[400px] h-[250px] rounded-full blur-[80px] animate-fog-drift-slow" style={{backgroundColor: "rgba(var(--gold-rgb),0.015)"}} />
-        <div className="absolute bottom-[20%] left-[40%] w-[350px] h-[200px] rounded-full blur-[90px] animate-fog-drift" style={{backgroundColor: "rgba(var(--fog-white),0.01)", animationDelay: "-8s"}} />
-      </div>
-
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-px h-px animate-particle-fall"
-            style={{
-              backgroundColor: "rgba(var(--gold-rgb),0.3)",
-              left: `${15 + i * 15}%`,
-              animationDuration: `${10 + i * 3}s`,
-              animationDelay: `${i * 2}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6">
-        <div className="rift-line animate-rift-glow mb-8" />
+      <section className="relative min-h-[62vh] md:min-h-[66vh] flex flex-col items-center justify-center px-6 py-20">
+        <div className="w-10 h-px bg-[var(--gold)] mb-8 opacity-70" />
 
         <h1
-          className="font-display text-6xl md:text-8xl text-[var(--text)] tracking-[0.3em] opacity-0 animate-fade-up gold-text-glow"
+          className="font-serif text-5xl md:text-7xl text-[var(--text)] tracking-[0.18em] opacity-0 animate-fade-up"
           style={{ animationDelay: "0.3s" }}
         >
           {heroTitle}
         </h1>
 
         <p
-          className="font-serif text-[var(--text-muted)] text-sm tracking-[0.5em] mt-6 opacity-0 animate-fade-up"
+          className="font-sans text-[var(--text-muted)] text-sm tracking-[0.16em] mt-6 opacity-0 animate-fade-up"
           style={{ animationDelay: "0.7s" }}
         >
           {heroSubtitle}
         </p>
 
-        <div className="rift-line animate-rift-glow mt-8" style={{ animationDelay: "-2s" }} />
+        <div className="w-16 h-px bg-[var(--border)] mt-8" />
 
         <nav
-          className="flex flex-wrap justify-center gap-4 mt-16 opacity-0 animate-fade-up"
+          className="flex flex-wrap justify-center gap-2 mt-12 opacity-0 animate-fade-up"
           style={{ animationDelay: "1.1s" }}
         >
           {categories.slice(0, 5).map((cat) => (
             <Link
               key={cat.id}
               href={`/categories/${cat.slug}`}
-              className="portal-link"
+              className="portal-link border-[var(--border)]"
             >
               {cat.name}
               <span className="text-[var(--text-ghost)] text-[10px] ml-1">{cat._count.posts}</span>
@@ -84,19 +63,17 @@ export default async function HomePage() {
       </section>
 
       <section className="relative max-w-page mx-auto px-6 pb-32">
-        <div className="rift-horizontal mb-16" />
-
         <div
-          className="text-center mb-16 opacity-0 animate-fade-up"
+          className="mb-8 opacity-0 animate-fade-up border-b border-[var(--border)] pb-4"
           style={{ animationDelay: "0.2s" }}
         >
-          <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.5em] font-serif">{archiveLabel}</span>
+          <span className="text-[var(--text-muted)] text-xs tracking-[0.16em] font-sans">{archiveLabel}</span>
         </div>
 
         {transformedPosts.length === 0 ? (
           <EmptyState text={emptyStateText} />
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-2">
             {transformedPosts.map((post, index) => (
               <div
                 key={post.id}
