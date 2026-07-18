@@ -3,9 +3,15 @@ import { transformPost } from "@/lib/types";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Eye, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import type { Metadata } from "next";
 import Link from "next/link";
 import MdxRenderer from "@/lib/mdx-renderer";
 import { logger } from "@/lib/logger";
+import ShareButtons from "@/components/frontend/ShareButtons";
+import LikeButton from "@/components/frontend/LikeButton";
+
+export const dynamicParams = true;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const posts = await prisma.post.findMany({
@@ -19,6 +25,34 @@ function estimateReadingTime(content: string): string {
   const text = content.replace(/<[^>]*>/g, "").replace(/[#*`\[\]()]/g, "");
   const minutes = Math.max(1, Math.ceil(text.length / 500));
   return `${minutes} 分钟`;
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = await prisma.post.findUnique({
+    where: { slug: params.slug },
+    select: { title: true, excerpt: true, coverImage: true, slug: true },
+  });
+  if (!post) return {};
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+
+  return {
+    title: post.title,
+    description: post.excerpt || "",
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || "",
+      type: "article",
+      ...(siteUrl ? { url: `${siteUrl}/posts/${post.slug}` } : {}),
+      images: post.coverImage ? [{ url: post.coverImage }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt || "",
+      images: post.coverImage ? [post.coverImage] : [],
+    },
+  };
 }
 
 export default async function PostPage({ params }: { params: { slug: string } }) {
@@ -94,6 +128,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
               <Eye size={11} />
               {post.views}
             </span>
+            <LikeButton postId={post.id} />
           </div>
 
           <div className="rift-line animate-rift-glow mt-10" style={{ animationDelay: "-2s" }} />
@@ -114,7 +149,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
         </div>
 
         {transformedPost.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-12">
+          <div className="flex flex-wrap gap-2 mb-6">
             {transformedPost.tags.map((tag) => (
               <Link key={tag.id} href={`/tags/${tag.slug}`} className="gold-tag">
                 {tag.name}
@@ -122,6 +157,10 @@ export default async function PostPage({ params }: { params: { slug: string } })
             ))}
           </div>
         )}
+
+        <div className="mb-8">
+          <ShareButtons title={post.title} url={`/posts/${post.slug}`} />
+        </div>
 
         <div className="rift-horizontal my-16" />
 

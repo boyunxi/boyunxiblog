@@ -20,6 +20,7 @@ export interface Post {
   tags: Tag[];
   createdAt: string | Date;
   views: number;
+  likesCount: number;
 }
 
 export function transformPost(post: {
@@ -32,6 +33,7 @@ export function transformPost(post: {
   tags: { tag: { id: number; name: string; slug: string } }[];
   createdAt: string | Date;
   views: number;
+  likesCount: number;
 }): Post {
   return {
     id: post.id,
@@ -47,5 +49,6 @@ export function transformPost(post: {
     })),
     createdAt: post.createdAt,
     views: post.views,
+    likesCount: post.likesCount,
   };
 }

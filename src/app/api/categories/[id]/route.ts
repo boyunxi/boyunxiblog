@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
+import { revalidatePath } from "next/cache";
 
 export const PUT = withLog(async (
   request,
@@ -24,6 +25,10 @@ export const PUT = withLog(async (
       where: { id: parseInt(params.id) },
       data: { name, slug },
     });
+
+    revalidatePath("/");
+    revalidatePath("/categories");
+    revalidatePath(`/categories/${category.slug}`);
 
     return NextResponse.json({ success: true, data: category });
   } catch (error) {
@@ -49,12 +54,23 @@ export const DELETE = withLog(async (
       );
     }
 
+    const category = await prisma.category.findUnique({
+      where: { id: parseInt(params.id) },
+      select: { slug: true },
+    });
+
     await prisma.post.updateMany({
       where: { categoryId: parseInt(params.id) },
       data: { categoryId: null },
     });
 
     await prisma.category.delete({ where: { id: parseInt(params.id) } });
+
+    if (category) {
+      revalidatePath("/");
+      revalidatePath("/categories");
+      revalidatePath(`/categories/${category.slug}`);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

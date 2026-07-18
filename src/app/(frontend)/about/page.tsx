@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import PageShell from "@/components/ui/PageShell";
 import PageHeader from "@/components/ui/PageHeader";
 
+export const revalidate = 60;
+
 export default async function AboutPage() {
   const settings = await prisma.siteSetting.findFirst({ where: { id: 1 } });
   const aboutContent = settings?.aboutContent;

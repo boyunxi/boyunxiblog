@@ -39,6 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = settings?.seoTitle || siteName;
   const keywords = settings?.seoKeywords || "";
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+
   return {
     title: {
       default: title,
@@ -52,6 +54,12 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName,
       type: "website",
       locale: "zh_CN",
+      ...(siteUrl ? { url: siteUrl } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }

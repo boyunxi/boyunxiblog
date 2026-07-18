@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
+import { revalidatePath } from "next/cache";
 
 export const PUT = withLog(async (
   request,
@@ -27,6 +28,10 @@ export const PUT = withLog(async (
       data: { name, slug },
     });
 
+    revalidatePath("/");
+    revalidatePath("/tags");
+    revalidatePath(`/tags/${tag.slug}`);
+
     return NextResponse.json({ success: true, data: tag });
   } catch (error) {
     return NextResponse.json(
@@ -51,7 +56,18 @@ export const DELETE = withLog(async (
       );
     }
 
+    const tag = await prisma.tag.findUnique({
+      where: { id: parseInt(params.id) },
+      select: { slug: true },
+    });
+
     await prisma.tag.delete({ where: { id: parseInt(params.id) } });
+
+    if (tag) {
+      revalidatePath("/");
+      revalidatePath("/tags");
+      revalidatePath(`/tags/${tag.slug}`);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

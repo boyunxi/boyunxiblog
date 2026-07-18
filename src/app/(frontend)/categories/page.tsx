@@ -4,6 +4,8 @@ import PageShell from "@/components/ui/PageShell";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 
+export const revalidate = 60;
+
 export default async function CategoriesPage() {
   const categories = await prisma.category.findMany({
     include: {
