@@ -6,11 +6,11 @@ import { logger } from "./logger";
 import { checkLockout, recordFail, recordSuccess } from "./login-guard";
 
 function extractIp(req: any): string {
-  return (
-    req?.headers &&
-    (req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip"))
-  ) || "unknown";
+  if (!req?.headers) return "unknown";
+  const h = req.headers;
+  const xff = typeof h.get === "function" ? h.get("x-forwarded-for") : (h["x-forwarded-for"] || h["X-Forwarded-For"]);
+  const xri = typeof h.get === "function" ? h.get("x-real-ip") : (h["x-real-ip"] || h["X-Real-Ip"]);
+  return (typeof xff === "string" ? xff.split(",")[0]?.trim() : xff) || xri || "unknown";
 }
 
 export const authOptions: NextAuthOptions = {
@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {

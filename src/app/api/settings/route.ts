@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
+import { revalidatePath } from "next/cache";
 
 export const GET = withLog(async () => {
   try {
@@ -126,6 +127,8 @@ export const PUT = withLog(async (request: NextRequest) => {
         easterEggSearchHello: body.easterEggSearchHello,
       },
     });
+
+    revalidatePath("/", "layout");
 
     return NextResponse.json({ success: true, data: settings });
   } catch (error) {

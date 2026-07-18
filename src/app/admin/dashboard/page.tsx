@@ -1,15 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, FolderOpen, Tag, Eye } from "lucide-react";
+import { FileText, FolderOpen, Tag, Eye, Users, MousePointerClick, Globe, Clock } from "lucide-react";
 import ScrollCard from "@/components/ui/ScrollCard";
 import AdminPageHeader from "@/components/ui/AdminPageHeader";
+
+interface TopVisitor {
+  ip: string;
+  country: string | null;
+  region: string | null;
+  city: string | null;
+  count: number;
+  lastSeen: string;
+}
 
 interface Stats {
   totalPosts: number;
   totalCategories: number;
   totalTags: number;
   totalViews: number;
+  todayVisitors: number;
+  yesterdayVisitors: number;
+  todayPageViews: number;
+  yesterdayPageViews: number;
+  totalVisitors: number;
+  topVisitors: TopVisitor[];
   postsByMonth: { month: string; count: number }[];
   viewsByMonth: { month: string; views: number }[];
   categoryDistribution: { name: string; count: number }[];
@@ -22,6 +37,12 @@ export default function DashboardPage() {
     totalCategories: 0,
     totalTags: 0,
     totalViews: 0,
+    todayVisitors: 0,
+    yesterdayVisitors: 0,
+    todayPageViews: 0,
+    yesterdayPageViews: 0,
+    totalVisitors: 0,
+    topVisitors: [],
     postsByMonth: [],
     viewsByMonth: [],
     categoryDistribution: [],
@@ -43,9 +64,16 @@ export default function DashboardPage() {
     { icon: Eye, label: "总浏览量", value: stats.totalViews, color: "text-ink" },
   ];
 
+  const visitorCards = [
+    { icon: Users, label: "今日访客", value: stats.todayVisitors, sub: `昨日 ${stats.yesterdayVisitors}` },
+    { icon: MousePointerClick, label: "今日浏览", value: stats.todayPageViews, sub: `昨日 ${stats.yesterdayPageViews}` },
+    { icon: Globe, label: "累计访客", value: stats.totalVisitors, sub: null },
+  ];
+
   const maxPostsByMonth = Math.max(...stats.postsByMonth.map((d) => d.count), 1);
   const maxViewsByMonth = Math.max(...stats.viewsByMonth.map((d) => d.views), 1);
   const maxCategoryDistribution = Math.max(...stats.categoryDistribution.map((d) => d.count), 1);
+  const maxVisitorCount = Math.max(...stats.topVisitors.map((v) => v.count), 1);
 
   return (
     <div className="space-y-8">
@@ -59,6 +87,24 @@ export default function DashboardPage() {
               <div>
                 <p className="text-4xl font-serif text-ink">{card.value}</p>
                 <p className="text-sm text-inkGray">{card.label}</p>
+              </div>
+            </div>
+          </ScrollCard>
+        ))}
+      </div>
+
+      {/* Visitor stats row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        {visitorCards.map((card) => (
+          <ScrollCard key={card.label}>
+            <div className="flex items-center gap-4">
+              <card.icon className="w-10 h-10 text-ochre/60" />
+              <div>
+                <p className="text-4xl font-serif text-ink">{card.value}</p>
+                <p className="text-sm text-inkGray">
+                  {card.label}
+                  {card.sub && <span className="text-inkGray/40 ml-2">({card.sub})</span>}
+                </p>
               </div>
             </div>
           </ScrollCard>
@@ -167,6 +213,81 @@ export default function DashboardPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Active visitor ranking */}
+      <div className="scroll-card p-6">
+        <h2 className="text-lg font-serif text-ink mb-6 flex items-center gap-2">
+          <Globe size={16} className="text-ochre/60" />
+          活跃访客排行
+        </h2>
+        {stats.topVisitors.length === 0 ? (
+          <p className="text-inkGray/50 text-sm text-center py-8">暂无访问数据</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left border-b border-ink/10">
+                  <th className="py-3 px-3 text-inkGray/60 font-normal text-xs">#</th>
+                  <th className="py-3 px-3 text-inkGray/60 font-normal text-xs">IP</th>
+                  <th className="py-3 px-3 text-inkGray/60 font-normal text-xs">位置</th>
+                  <th className="py-3 px-3 text-inkGray/60 font-normal text-xs text-right">访问次数</th>
+                  <th className="py-3 px-3 text-inkGray/60 font-normal text-xs">最近访问</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.topVisitors.map((v, index) => {
+                  const geoParts = [v.country, v.region, v.city].filter(Boolean);
+                  return (
+                    <tr key={v.ip} className="border-b border-ink/5 hover:bg-ink/5 transition-colors">
+                      <td className="py-3 px-3">
+                        <span
+                          className={`inline-flex items-center justify-center w-6 h-6 rounded-sm text-xs font-serif ${
+                            index === 0
+                              ? "bg-gold text-ricepaper"
+                              : index === 1
+                              ? "bg-ochre/80 text-ricepaper"
+                              : index === 2
+                              ? "bg-ink/60 text-ricepaper"
+                              : "text-inkGray/60"
+                          }`}
+                        >
+                          {index + 1}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 text-inkGray font-mono text-xs">{v.ip}</td>
+                      <td className="py-3 px-3 text-inkGray text-xs">
+                        {geoParts.length > 0 ? geoParts.join(" ") : "—"}
+                      </td>
+                      <td className="py-3 px-3 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <div className="flex-1 max-w-[80px] h-1.5 bg-ink/5 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-ochre/60 to-gold/60 rounded-full"
+                              style={{ width: `${(v.count / maxVisitorCount) * 100}%` }}
+                            />
+                          </div>
+                          <span className="text-inkGray text-xs w-8 text-right">{v.count}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-3 text-inkGray/60 text-xs whitespace-nowrap">
+                        <span className="flex items-center gap-1">
+                          <Clock size={10} />
+                          {new Date(v.lastSeen).toLocaleString("zh-CN", {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

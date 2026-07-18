@@ -16,6 +16,7 @@ interface LogEntry {
   message: string;
   meta: string | null;
   ip: string | null;
+  geo: string | null;
   userId: number | null;
   createdAt: string;
 }
@@ -54,6 +55,17 @@ const categoryLabels: Record<string, string> = {
   view: "访问",
   system: "系统",
 };
+
+function formatGeo(geo: string | null): string {
+  if (!geo) return "—";
+  try {
+    const g = JSON.parse(geo);
+    const parts = [g.country, g.region, g.city].filter((p) => p && p !== "未知");
+    return parts.length > 0 ? parts.join(" ") : "—";
+  } catch {
+    return "—";
+  }
+}
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -175,12 +187,13 @@ export default function LogsPage() {
           <AdminTableHeaderCell>操作</AdminTableHeaderCell>
           <AdminTableHeaderCell>信息</AdminTableHeaderCell>
           <AdminTableHeaderCell>IP</AdminTableHeaderCell>
+          <AdminTableHeaderCell>位置</AdminTableHeaderCell>
           <AdminTableHeaderCell>时间</AdminTableHeaderCell>
         </AdminTableHeader>
         <tbody>
           {logs.length === 0 ? (
             <tr>
-              <td colSpan={6} className="text-center py-8 text-inkGray/60">暂无日志</td>
+              <td colSpan={7} className="text-center py-8 text-inkGray/60">暂无日志</td>
             </tr>
           ) : (
             logs.map((log) => (
@@ -201,6 +214,9 @@ export default function LogsPage() {
                 </AdminTableCell>
                 <AdminTableCell className="text-xs text-inkGray/50">
                   {log.ip || "—"}
+                </AdminTableCell>
+                <AdminTableCell className="text-xs text-inkGray/50">
+                  {formatGeo(log.geo)}
                 </AdminTableCell>
                 <AdminTableCell className="text-xs text-inkGray/50 whitespace-nowrap">
                   {new Date(log.createdAt).toLocaleString("zh-CN")}

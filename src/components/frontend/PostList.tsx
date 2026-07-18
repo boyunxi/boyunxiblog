@@ -8,6 +8,7 @@ interface Post {
   coverImage?: string | null;
   createdAt: string | Date;
   views: number;
+  likesCount: number;
   category?: { name: string; slug: string } | null;
   tags: { id: number; name: string; slug: string }[];
 }

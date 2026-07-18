@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
+import { revalidatePath } from "next/cache";
 
 export const GET = withLog(async (
   request,
@@ -64,6 +65,12 @@ export const PUT = withLog(async (
       include: { category: true, tags: { include: { tag: true } } },
     });
 
+    revalidatePath("/");
+    revalidatePath(`/posts/${post.slug}`);
+    revalidatePath("/categories");
+    revalidatePath("/tags");
+    revalidatePath("/search");
+
     return NextResponse.json({ success: true, data: post });
   } catch (error) {
     return NextResponse.json(
@@ -88,7 +95,20 @@ export const DELETE = withLog(async (
       );
     }
 
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(params.id) },
+      select: { slug: true },
+    });
+
     await prisma.post.delete({ where: { id: parseInt(params.id) } });
+
+    if (post) {
+      revalidatePath("/");
+      revalidatePath(`/posts/${post.slug}`);
+      revalidatePath("/categories");
+      revalidatePath("/tags");
+      revalidatePath("/search");
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
