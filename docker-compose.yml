@@ -1,0 +1,42 @@
+services:
+  blog:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: https://boyunxi.cn
+        NEXTAUTH_URL: https://boyunxi.cn
+    container_name: boyunxiblog
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NEXTAUTH_SECRET=boyunxi-blog-secret-change-in-production
+      - NEXTAUTH_URL=https://boyunxi.cn
+      - NEXT_PUBLIC_SITE_URL=https://boyunxi.cn
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=blog-images
+      - MINIO_PUBLIC_URL=https://boyunxi.cn/images
+    volumes:
+      - blog-data:/app/data
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: blog-minio
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    restart: unless-stopped
+
+volumes:
+  blog-data:
+  minio-data:

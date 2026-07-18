@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 
 interface Post {
   id: number;
@@ -9,6 +9,7 @@ interface Post {
   coverImage?: string | null;
   createdAt: string | Date;
   views: number;
+  likesCount: number;
   category?: { name: string; slug: string } | null;
   tags: { id: number; name: string; slug: string }[];
 }
@@ -58,6 +59,12 @@ export default function PostCard({
               <span className="text-[var(--text-ghost)] text-[10px] tracking-wide">
                 {new Date(post.createdAt).getFullYear()}.{String(new Date(post.createdAt).getMonth() + 1).padStart(2, "0")}
               </span>
+              {post.likesCount > 0 && (
+                <span className="text-[var(--text-ghost)] text-[10px] tracking-wider inline-flex items-center gap-1">
+                  <Heart size={9} className="text-[rgba(var(--gold-rgb),0.4)]" />
+                  {post.likesCount}
+                </span>
+              )}
             </div>
             <h2 className="font-serif text-[var(--text)] text-lg md:text-xl tracking-wide mb-3 text-balance group-hover:text-[var(--gold)] transition-colors">
               {post.title}

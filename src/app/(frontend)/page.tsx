@@ -4,6 +4,8 @@ import Link from "next/link";
 import PostCard from "@/components/frontend/PostCard";
 import EmptyState from "@/components/ui/EmptyState";
 
+export const revalidate = 60;
+
 export default async function HomePage() {
   const [posts, categories, settings] = await Promise.all([
     prisma.post.findMany({

@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { RefreshCw, ImageIcon, Bold, Italic, Heading1, Heading2, List, LinkIcon, Quote, Code, ImagePlus, Trash2, Eye, Edit2 } from "lucide-react";
+import { RefreshCw, Bold, Italic, Heading1, Heading2, List, LinkIcon, Quote, Code, ImagePlus, Trash2, Eye, Edit2 } from "lucide-react";
 import AdminPageHeader from "@/components/ui/AdminPageHeader";
 import AdminButton from "@/components/ui/AdminButton";
 import AdminConfirmDialog from "@/components/ui/AdminConfirmDialog";
+import ImagePickerModal from "@/components/ui/ImagePickerModal";
 
 interface Category {
   id: number;
@@ -56,6 +57,8 @@ export default function EditPostPage() {
   const [showDelete, setShowDelete] = useState(false);
   const [content, setContent] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetch("/api/categories")
@@ -102,6 +105,56 @@ export default function EditPostPage() {
       textarea.focus();
       textarea.setSelectionRange(start + prefix.length, start + prefix.length + (selected || "文本").length);
     }, 0);
+  };
+
+  const handleImageSelect = (markdown: string) => {
+    setShowImagePicker(false);
+    const textarea = document.getElementById("md-editor") as HTMLTextAreaElement;
+    if (!textarea) { setContent(content + "\n" + markdown + "\n"); return; }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const insert = (start === end && content.length > 0) ? "\n" + markdown + "\n" : markdown;
+    const newContent = content.substring(0, start) + insert + content.substring(end);
+    setContent(newContent);
+    setTimeout(() => {
+      textarea.focus();
+      const pos = start + insert.length;
+      textarea.setSelectionRange(pos, pos);
+    }, 0);
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: formData });
+    const data = await res.json();
+    setUploading(false);
+    if (data.success && data.data) {
+      handleImageSelect(`![${file.name.replace(/\.[^.]+$/, "")}](${data.data.url})`);
+    }
+  };
+
+  const handleEditorDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith("image/")) handleFileUpload(file);
+    }
+  };
+
+  const handleEditorPaste = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of Array.from(items)) {
+      if (item.type.startsWith("image/")) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) handleFileUpload(file);
+        return;
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -186,15 +239,36 @@ export default function EditPostPage() {
         <div>
           <label className="block text-sm font-serif text-ink mb-1">封面图</label>
           <div className="flex gap-2">
-            <ImageIcon className="w-5 h-5 text-ink/40 mt-2" />
             <input
               type="text"
               value={coverImage}
               onChange={(e) => setCoverImage(e.target.value)}
-              placeholder="输入图片URL"
+              placeholder="输入图片URL或上传"
               className="flex-1 px-4 py-2 border border-ink/20 rounded-sm bg-ricepaper text-inkGray focus:outline-none focus:border-ink/50"
             />
+            <label className="cursor-pointer inline-flex items-center px-3 py-2 border border-ink/20 rounded-sm text-inkGray/60 hover:text-ink hover:bg-ink/5 transition-colors text-sm">
+              <ImagePlus className="w-4 h-4 mr-1" />
+              上传
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const formData = new FormData();
+                  formData.append("file", file);
+                  const res = await fetch("/api/upload", { method: "POST", body: formData });
+                  const data = await res.json();
+                  if (data.success && data.data) setCoverImage(data.data.url);
+                  e.target.value = "";
+                }}
+              />
+            </label>
           </div>
+          {coverImage && (
+            <img src={coverImage} alt="封面预览" className="mt-2 max-h-32 rounded-sm border border-ink/10 object-cover" />
+          )}
         </div>
 
         <div>
@@ -282,7 +356,7 @@ export default function EditPostPage() {
                 <button type="button" onClick={() => insertMarkdown("[", "](url)")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="链接">
                   <LinkIcon className="w-4 h-4" />
                 </button>
-                <button type="button" onClick={() => insertMarkdown("![alt](", ")")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="图片">
+                <button type="button" onClick={() => setShowImagePicker(true)} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="选择图片 / 上传">
                   <ImagePlus className="w-4 h-4" />
                 </button>
                 <button type="button" onClick={() => insertMarkdown("> ")} className="p-1.5 rounded-sm hover:bg-ink/10 text-inkGray" title="引用">
@@ -292,11 +366,19 @@ export default function EditPostPage() {
                   <Code className="w-4 h-4" />
                 </button>
               </div>
+              {uploading && (
+                <div className="px-3 py-1.5 bg-gold/10 border-b border-gold/20 text-xs text-gold flex items-center gap-2">
+                  <div className="w-3 h-3 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                  正在上传图片...
+                </div>
+              )}
               <textarea
                 id="md-editor"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="使用 Markdown 或 MDX 语法编写文章内容..."
+                onDrop={handleEditorDrop}
+                onPaste={handleEditorPaste}
+                placeholder="使用 Markdown 或 MDX 语法编写文章内容...&#10;支持拖拽图片或 Ctrl+V 粘贴图片上传"
                 className="w-full p-4 min-h-[400px] font-mono text-sm text-inkGray bg-transparent resize-y focus:outline-none"
               />
             </div>
@@ -355,6 +437,12 @@ export default function EditPostPage() {
           </button>
         </div>
       </form>
+
+      <ImagePickerModal
+        open={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onSelect={handleImageSelect}
+      />
 
       <AdminConfirmDialog
         open={showDelete}

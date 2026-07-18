@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { resolveGeo } from "./geo";
 
 type LogLevel = "debug" | "info" | "warn" | "error";
 type LogCategory = "api" | "auth" | "post" | "category" | "tag" | "setting" | "view" | "system";
@@ -37,8 +38,17 @@ async function flushQueue() {
   }
 }
 
-async function writeLog(options: LogOptions) {
+function writeLog(options: LogOptions) {
   if (!shouldLog(options.level ?? "info")) return;
+
+  const ip = options.ip ?? null;
+
+  // Sync geo resolution — ip2region is local, no network call
+  let geo: string | null = null;
+  if (ip && ip !== "unknown") {
+    const geoInfo = resolveGeo(ip);
+    geo = geoInfo ? JSON.stringify(geoInfo) : null;
+  }
 
   const entry = {
     level: options.level ?? "info",
@@ -46,7 +56,8 @@ async function writeLog(options: LogOptions) {
     action: options.action,
     message: options.message,
     meta: options.meta ? JSON.stringify(options.meta) : null,
-    ip: options.ip ?? null,
+    ip,
+    geo,
     userId: options.userId ?? null,
   };
 
