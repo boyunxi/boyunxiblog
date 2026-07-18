@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
+import { revalidatePath } from "next/cache";
 
 export const GET = withLog(async () => {
   try {
@@ -38,6 +39,10 @@ export const POST = withLog(async (request) => {
     const tag = await prisma.tag.create({
       data: { name, slug },
     });
+
+    revalidatePath("/");
+    revalidatePath("/tags");
+    revalidatePath(`/tags/${tag.slug}`);
 
     return NextResponse.json({ success: true, data: tag }, { status: 201 });
   } catch (error) {

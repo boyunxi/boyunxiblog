@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
+import { revalidatePath } from "next/cache";
 
 export const GET = withLog(async () => {
   try {
@@ -36,6 +37,10 @@ export const POST = withLog(async (request) => {
     const category = await prisma.category.create({
       data: { name, slug },
     });
+
+    revalidatePath("/");
+    revalidatePath("/categories");
+    revalidatePath(`/categories/${category.slug}`);
 
     return NextResponse.json({ success: true, data: category }, { status: 201 });
   } catch (error) {

@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
     if (result?.error) {
       const isLocked = await checkLockout();
       if (!isLocked) {
-        setError("邮箱或密码错误");
+        setError("用户名或密码错误");
       }
     } else {
       router.push("/admin");
@@ -116,10 +116,10 @@ export default function AdminLoginPage() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-inkGray/50"
               />
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="邮箱"
+                placeholder="用户名"
                 required
                 disabled={isLocked}
               aria-label="邮箱"

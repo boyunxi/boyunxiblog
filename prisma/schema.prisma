@@ -26,9 +26,22 @@ model Post {
   categoryId  Int?
   category    Category? @relation(fields: [categoryId], references: [id])
   tags        PostTag[]
+  likes       Like[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   views       Int       @default(0)
+  likesCount  Int       @default(0)
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  ip        String
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, ip])
+  @@index([postId])
 }
 
 model Category {
@@ -54,6 +67,16 @@ model PostTag {
   @@id([postId, tagId])
 }
 
+model Image {
+  id        Int      @id @default(autoincrement())
+  name      String
+  filename  String   @unique
+  mimeType  String
+  size      Int
+  url       String
+  createdAt DateTime @default(now())
+}
+
 model Log {
   id         Int      @id @default(autoincrement())
   level      String   @default("info")
@@ -62,6 +85,7 @@ model Log {
   message    String
   meta       String?
   ip         String?
+  geo        String?
   userId     Int?
   createdAt  DateTime @default(now())
 
