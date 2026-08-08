@@ -10,7 +10,7 @@ export default function AdminButton({
   const variants: Record<AdminButtonVariant, string> = {
     primary: "bg-ink text-ricepaper hover:bg-ink/90",
     secondary: "border border-ink/20 text-inkGray bg-transparent hover:bg-ink/5",
-    danger: "bg-red-700 text-white hover:bg-red-800",
+    danger: "bg-cinnabar text-white hover:bg-cinnabar/90",
   };
 
   return (

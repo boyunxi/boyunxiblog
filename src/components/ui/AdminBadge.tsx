@@ -6,8 +6,8 @@ export default function AdminBadge({
   variant?: "default" | "warning";
 }) {
   const variants = {
-    default: "bg-emerald-900/10 text-emerald-900 border border-emerald-900/10",
-    warning: "bg-amber-700/10 text-amber-800 border border-amber-700/10",
+    default: "bg-jade/10 text-jade border border-jade/20",
+    warning: "bg-ochre/10 text-ochre border border-ochre/20",
   };
 
   return (

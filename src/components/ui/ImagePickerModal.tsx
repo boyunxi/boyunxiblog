@@ -234,7 +234,7 @@ export default function ImagePickerModal({ open, onClose, onSelect }: Props) {
                         className="p-0.5 hover:text-ink opacity-0 group-hover:opacity-100 transition-opacity"
                         title="复制链接"
                       >
-                        {copied === img.id ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                        {copied === img.id ? <Check className="w-3 h-3 text-jade" /> : <Copy className="w-3 h-3" />}
                       </button>
                     </div>
                   </div>

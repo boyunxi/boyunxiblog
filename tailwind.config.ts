@@ -39,9 +39,14 @@ const config: Config = {
           DEFAULT: "#1a1a1a",
         },
         inkGray: "#6b7280",
-        ricepaper: "#FAF8F3",
+        ricepaper: {
+          DEFAULT: "#FAF8F3",
+          dark: "#F1EDE3",
+        },
         cloudWhite: "#ffffff",
         ochre: "#a0752a",
+        jade: "#3D6B52",
+        cinnabar: "#9D3A32",
       },
       fontFamily: {
         serif: ["Noto Serif SC", "serif"],

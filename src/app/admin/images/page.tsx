@@ -330,7 +330,7 @@ export default function ImagesPage() {
                         className="flex-1 px-1 py-0.5 border border-ink/20 rounded text-xs bg-ricepaper"
                         autoFocus
                       />
-                      <button onClick={() => handleRename(img.id)} className="p-0.5 text-green-600 hover:bg-green-50 rounded"><Check className="w-3 h-3" /></button>
+                      <button onClick={() => handleRename(img.id)} className="p-0.5 text-jade hover:bg-jade/10 rounded"><Check className="w-3 h-3" /></button>
                       <button onClick={() => setEditingId(null)} className="p-0.5 text-inkGray/50 hover:bg-ink/5 rounded"><X className="w-3 h-3" /></button>
                     </div>
                   ) : (
@@ -355,11 +355,11 @@ export default function ImagesPage() {
                         className="p-0.5 hover:text-ink rounded"
                         title="复制链接"
                       >
-                        {copied === img.id ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                        {copied === img.id ? <Check className="w-3 h-3 text-jade" /> : <Copy className="w-3 h-3" />}
                       </button>
                       <button
                         onClick={() => handleDeleteSingle(img.id)}
-                        className="p-0.5 hover:text-red-600 rounded"
+                        className="p-0.5 hover:text-cinnabar rounded"
                         title="删除"
                       >
                         <Trash2 className="w-3 h-3" />
@@ -390,7 +390,7 @@ export default function ImagesPage() {
                             >{copied === img.id ? "已复制" : "复制链接"}</button>
                             <button
                               onClick={() => { setPreviewId(null); handleDeleteSingle(img.id); }}
-                              className="text-red-400 hover:text-red-300"
+                              className="text-cinnabar/70 hover:text-cinnabar"
                             >删除</button>
                           </span>
                         )}

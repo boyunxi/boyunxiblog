@@ -112,8 +112,8 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
-          <h2 className="text-lg font-serif text-ink mb-6">文章发布趋势</h2>
+        <AdminCard>
+          <h2 className="text-lg font-serif text-ink">文章发布趋势</h2>
           <div className="flex items-end gap-3 h-48">
             {stats.postsByMonth.map((d) => (
               <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
@@ -126,16 +126,16 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-        </div>
+        </AdminCard>
 
-        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
-          <h2 className="text-lg font-serif text-ink mb-6">浏览量趋势</h2>
+        <AdminCard>
+          <h2 className="text-lg font-serif text-ink">浏览量趋势</h2>
           <svg viewBox="0 0 300 160" className="w-full h-48">
             {stats.viewsByMonth.length > 1 && (
               <>
                 <polyline
                   fill="none"
-                  stroke="#2D5A4A"
+                  stroke="#3D6B52"
                   strokeWidth="2"
                   strokeLinejoin="round"
                   points={stats.viewsByMonth
@@ -152,7 +152,7 @@ export default function DashboardPage() {
                   return (
                     <g key={d.month}>
                       <circle cx={x} cy={y} r="3" fill="#D4AF37" />
-                      <text x={x} y={155} textAnchor="middle" className="text-[8px]" fill="#4A4A4A">
+                      <text x={x} y={155} textAnchor="middle" className="text-[8px]" fill="#6B7280">
                         {d.month}
                       </text>
                     </g>
@@ -161,12 +161,12 @@ export default function DashboardPage() {
               </>
             )}
           </svg>
-        </div>
+        </AdminCard>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
-          <h2 className="text-lg font-serif text-ink mb-6">分类分布</h2>
+        <AdminCard>
+          <h2 className="text-lg font-serif text-ink">分类分布</h2>
           <div className="space-y-3">
             {stats.categoryDistribution.map((d) => (
               <div key={d.name} className="flex items-center gap-3">
@@ -184,10 +184,10 @@ export default function DashboardPage() {
               <p className="text-inkGray/50 text-sm text-center py-4">暂无数据</p>
             )}
           </div>
-        </div>
+        </AdminCard>
 
-        <div className="bg-white border border-ink/10 rounded-lg p-6 shadow-[0_8px_24px_rgba(32,37,34,0.05)]">
-          <h2 className="text-lg font-serif text-ink mb-6">热门文章排行</h2>
+        <AdminCard>
+          <h2 className="text-lg font-serif text-ink">热门文章排行</h2>
           <div className="space-y-3">
             {stats.topPosts.map((post, index) => (
               <div key={post.id} className="flex items-center gap-3">
@@ -212,11 +212,11 @@ export default function DashboardPage() {
               <p className="text-inkGray/50 text-sm text-center py-4">暂无数据</p>
             )}
           </div>
-        </div>
+        </AdminCard>
       </div>
 
       {/* Active visitor ranking */}
-      <AdminCard className="p-6">
+      <AdminCard>
         <h2 className="text-lg font-serif text-ink mb-6 flex items-center gap-2">
           <Globe size={16} className="text-ochre/60" />
           活跃访客排行

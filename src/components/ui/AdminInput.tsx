@@ -3,7 +3,7 @@ export default function AdminInput({
   className = "",
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & { label?: string }) {
-  const inputClass = "w-full px-4 py-2 border border-ink/20 rounded-sm bg-ricepaper text-inkGray focus:outline-none focus:border-ink/50 transition-colors";
+  const inputClass = "w-full px-4 py-2 border border-ink/20 rounded-sm bg-ricepaper text-inkGray focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors";
 
   if (label) {
     return (

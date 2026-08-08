@@ -17,6 +17,8 @@ import {
   Menu,
   X,
   ScrollText,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 
 const navItems = [
@@ -30,7 +32,13 @@ const navItems = [
   { label: "站点设置", icon: Settings, href: "/admin/settings" },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({
+  collapsed,
+  onToggle,
+}: {
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -40,13 +48,34 @@ export default function AdminSidebar() {
     return pathname.startsWith(href);
   };
 
+  // 移动端抽屉打开时始终完整展开，折叠状态仅作用于桌面端
+  const isCollapsed = mobileOpen ? false : collapsed;
+
   const sidebarContent = (
     <div className="flex flex-col h-full">
-      <div className="p-6 border-b border-white/10">
-        <h1 className="font-serif text-xl text-gold tracking-wide">
-          博云隙
-        </h1>
-        <p className="text-ricepaper/60 text-xs mt-1 tracking-wide">内容管理</p>
+      <div
+        className={`flex items-center gap-3 border-b border-white/10 ${
+          isCollapsed ? "flex-col justify-center py-5" : "justify-between p-6"
+        }`}
+      >
+        <div className="text-center">
+          <h1 className="font-serif text-xl text-gold tracking-wide">
+            {isCollapsed ? "隙" : "博云隙"}
+          </h1>
+          {!isCollapsed && (
+            <p className="text-ricepaper/60 text-xs mt-1 tracking-wide">
+              内容管理
+            </p>
+          )}
+        </div>
+        <button
+          onClick={onToggle}
+          title={isCollapsed ? "展开侧栏" : "收起侧栏"}
+          aria-label={isCollapsed ? "展开侧栏" : "收起侧栏"}
+          className="hidden lg:flex items-center justify-center w-8 h-8 rounded text-ricepaper/60 hover:text-gold hover:bg-white/10 transition-colors"
+        >
+          {isCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+        </button>
       </div>
 
       <nav className="flex-1 py-4">
@@ -58,38 +87,49 @@ export default function AdminSidebar() {
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 min-h-11 px-6 py-3 text-sm transition-colors ${
+              title={isCollapsed ? item.label : undefined}
+              className={`flex items-center min-h-11 text-sm transition-colors ${
+                isCollapsed ? "justify-center px-0" : "gap-3 px-6"
+              } ${
                 active
-                  ? "bg-ink/80 text-gold border-l-4 border-gold"
+                  ? isCollapsed
+                    ? "bg-ink/80 text-gold"
+                    : "bg-ink/80 text-gold border-l-4 border-gold"
                   : "text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper border-l-4 border-transparent"
               }`}
             >
               <Icon size={18} />
-              <span>{item.label}</span>
+              {!isCollapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
       <div className="border-t border-ink/30 py-4">
-        {session?.user && (
-          <div className="px-6 py-2 text-xs text-ricepaper/50">
+        {session?.user && !isCollapsed && (
+          <div className="px-6 py-2 text-xs text-ricepaper/50 truncate">
             {session.user.email}
           </div>
         )}
         <Link
           href="/"
-          className="flex items-center gap-3 px-6 py-3 text-sm text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper transition-colors"
+          title={isCollapsed ? "返回前台" : undefined}
+          className={`flex items-center min-h-11 text-sm text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper transition-colors ${
+            isCollapsed ? "justify-center px-0" : "gap-3 px-6"
+          }`}
         >
           <ExternalLink size={18} />
-          <span>返回前台</span>
+          {!isCollapsed && <span>返回前台</span>}
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-3 px-6 py-3 text-sm text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper transition-colors w-full"
+          title={isCollapsed ? "退出登录" : undefined}
+          className={`flex items-center min-h-11 text-sm text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper transition-colors w-full ${
+            isCollapsed ? "justify-center px-0" : "gap-3 px-6"
+          }`}
         >
           <LogOut size={18} />
-          <span>退出登录</span>
+          {!isCollapsed && <span>退出登录</span>}
         </button>
       </div>
     </div>
@@ -112,9 +152,9 @@ export default function AdminSidebar() {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-ink text-ricepaper z-50 transform transition-transform duration-300 lg:translate-x-0 ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full bg-ink text-ricepaper z-50 transform transition-all duration-300 lg:translate-x-0 ${
+          isCollapsed ? "w-20" : "w-64"
+        } ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <button
           onClick={() => setMobileOpen(false)}

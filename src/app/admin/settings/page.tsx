@@ -66,7 +66,7 @@ const defaultSettings: Settings = {
   easterEggSearchHello: "你好，有缘人！既然寻到了此处，便留下吧。",
 };
 
-const inputClass = "w-full px-4 py-2 border border-ink/20 rounded-sm bg-ricepaper text-inkGray focus:outline-none focus:border-ink/50 transition-colors";
+const inputClass = "w-full px-4 py-2 border border-ink/20 rounded-sm bg-ricepaper text-inkGray focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors";
 const labelClass = "block text-sm font-serif text-ink mb-1.5";
 
 export default function SettingsPage() {
@@ -122,7 +122,7 @@ export default function SettingsPage() {
       <AdminPageHeader
         title="站点设置"
         action={
-          <AdminButton onClick={handleSave} disabled={saving} className={saved ? "bg-green-600 text-white hover:bg-green-600" : ""}>
+          <AdminButton onClick={handleSave} disabled={saving} className={saved ? "bg-jade text-white hover:bg-jade" : ""}>
             <Save className="w-4 h-4" />
             {saving ? "保存中..." : saved ? "已保存" : "保存设置"}
           </AdminButton>
@@ -313,7 +313,7 @@ export default function SettingsPage() {
       </AdminCard>
 
       <div className="flex justify-end pb-8">
-        <AdminButton onClick={handleSave} disabled={saving} className={`px-6 py-3 ${saved ? "bg-green-600 text-white hover:bg-green-600" : ""}`}>
+        <AdminButton onClick={handleSave} disabled={saving} className={`px-6 py-3 ${saved ? "bg-jade text-white hover:bg-jade" : ""}`}>
           <Save className="w-4 h-4" />
           {saving ? "保存中..." : saved ? "已保存" : "保存设置"}
         </AdminButton>
