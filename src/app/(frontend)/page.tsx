@@ -3,6 +3,7 @@ import { transformPost } from "@/lib/types";
 import Link from "next/link";
 import PostCard from "@/components/frontend/PostCard";
 import EmptyState from "@/components/ui/EmptyState";
+import Reveal from "@/components/ui/Reveal";
 
 export const revalidate = 60;
 
@@ -77,13 +78,9 @@ export default async function HomePage() {
         ) : (
           <div className="space-y-2">
             {transformedPosts.map((post, index) => (
-              <div
-                key={post.id}
-                className="opacity-0 animate-fade-up"
-                style={{ animationDelay: `${0.1 * index + 0.3}s` }}
-              >
+              <Reveal key={post.id} delay={Math.min(index, 8) * 80}>
                 <PostCard post={post} variant="hero" />
-              </div>
+              </Reveal>
             ))}
           </div>
         )}

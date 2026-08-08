@@ -5,6 +5,7 @@ services:
       args:
         NEXT_PUBLIC_SITE_URL: https://boyunxi.cn
         NEXTAUTH_URL: https://boyunxi.cn
+        IMAGES_REMOTE_HOSTS: ${IMAGES_REMOTE_HOSTS:-boyunxi.cn}
     container_name: boyunxiblog
     ports:
       - "127.0.0.1:3000:3000"
@@ -19,12 +20,17 @@ services:
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:?MINIO_SECRET_KEY is required}
       - MINIO_BUCKET=${MINIO_BUCKET:-blog-images}
       - MINIO_PUBLIC_URL=${MINIO_PUBLIC_URL:-https://boyunxi.cn/images}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     volumes:
       - blog-data:/app/data
     restart: unless-stopped
 
   minio:
-    image: minio/minio:latest
+    # 固定具体版本，避免 :latest 漂移（2025-04-22 版本，已在多处部署验证）
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
     container_name: blog-minio
     ports:
       - "127.0.0.1:9000:9000"
@@ -33,6 +39,10 @@ services:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?MINIO_ACCESS_KEY is required}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?MINIO_SECRET_KEY is required}
     command: server /data --console-address ":9001"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     volumes:
       - minio-data:/data
     restart: unless-stopped

@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+
+const FOOTER_LOGO_CLICKS = 5;
+const FOOTER_LOGO_WINDOW = 2000;
 
 export default function Footer() {
   const [siteName, setSiteName] = useState("薄云隙");
@@ -10,6 +13,8 @@ export default function Footer() {
   const [copyrightText, setCopyrightText] = useState("薄云隙 · 数字古风档案馆");
   const [icpNumber, setIcpNumber] = useState("");
   const [policeNumber, setPoliceNumber] = useState("");
+  const logoClickCount = useRef(0);
+  const logoClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -27,11 +32,32 @@ export default function Footer() {
       .catch(() => {});
   }, []);
 
+  // 页脚彩蛋：2 秒内连点 logo 5 次触发
+  const handleLogoClick = () => {
+    logoClickCount.current += 1;
+    if (logoClickTimer.current) clearTimeout(logoClickTimer.current);
+    logoClickTimer.current = setTimeout(() => {
+      logoClickCount.current = 0;
+    }, FOOTER_LOGO_WINDOW);
+
+    if (logoClickCount.current >= FOOTER_LOGO_CLICKS) {
+      logoClickCount.current = 0;
+      window.dispatchEvent(new CustomEvent("footer-logo-click"));
+    }
+  };
+
   return (
     <footer style={{backgroundColor: "var(--bg-deep)"}}>
       <div className="rift-horizontal" />
       <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col items-center gap-4">
-        <div className="w-8 h-8 rounded-full border border-[rgba(var(--gold-rgb),0.15)] flex items-center justify-center text-[rgba(var(--gold-rgb),0.3)] text-sm font-serif animate-gold-breathe">{logoText}</div>
+        <button
+          type="button"
+          onClick={handleLogoClick}
+          aria-label="站点印章"
+          className="w-8 h-8 rounded-full border border-[rgba(var(--gold-rgb),0.15)] flex items-center justify-center text-[rgba(var(--gold-rgb),0.3)] text-sm font-serif animate-gold-breathe cursor-pointer transition-colors hover:text-[rgba(var(--gold-rgb),0.6)] hover:border-[rgba(var(--gold-rgb),0.35)]"
+        >
+          {logoText}
+        </button>
         <span className="font-serif text-[var(--text-muted)] text-xs tracking-[0.3em]">{siteName}</span>
         <span className="text-[var(--text-ghost)] text-[10px] tracking-[0.4em] font-serif">{siteDescription}</span>
         <div className="w-16 my-4"><div className="rift-horizontal" /></div>

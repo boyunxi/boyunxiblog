@@ -100,6 +100,19 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // 7 天
+    updateAge: 24 * 60 * 60, // 活跃 24h 内刷新一次，滑动续期
+  },
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+      },
+    },
   },
   callbacks: {
     async jwt({ token, user }) {

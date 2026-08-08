@@ -9,6 +9,7 @@ import MdxRenderer from "@/lib/mdx-renderer";
 import { logger } from "@/lib/logger";
 import ShareButtons from "@/components/frontend/ShareButtons";
 import LikeButton from "@/components/frontend/LikeButton";
+import ArticleReveal from "@/components/ui/ArticleReveal";
 
 export const dynamicParams = true;
 export const revalidate = 60;
@@ -92,6 +93,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
   return (
     <article className="relative">
+      <ArticleReveal />
       <div className="max-w-content mx-auto px-6 pt-8 pb-32 relative z-10">
         <Link
           href="/"

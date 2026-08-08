@@ -11,11 +11,12 @@
   "dependencies": {
     "@prisma/client": "5.22.0",
     "bcryptjs": "2.4.3",
+    "file-type": "^22.0.1",
     "ip2region": "^2.3.0",
     "lucide-react": "0.453.0",
     "minio": "^8.0.7",
     "next": "14.2.35",
-    "next-auth": "4.24.14",
+    "next-auth": "^4.24.15",
     "next-mdx-remote": "^6.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -33,7 +34,7 @@
     "autoprefixer": "^10.4.0",
     "eslint": "^8.0.0",
     "eslint-config-next": "14.2.15",
-    "postcss": "^8.4.0",
+    "postcss": "^8.5.26",
     "prisma": "5.22.0",
     "tailwindcss": "^3.4.0",
     "ts-node": "^10.9.0",
@@ -41,5 +42,8 @@
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "overrides": {
+    "postcss": "^8.5.26"
   }
 }

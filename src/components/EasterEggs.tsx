@@ -79,6 +79,24 @@ function KonamiOverlay({ text, onClose }: { text: string; onClose: () => void })
   );
 }
 
+const FOOTER_EGG_TEXT = "闲云潭影日悠悠，物换星移几度秋";
+
+function FooterInkOverlay({ text, onClose }: { text: string; onClose: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 4500);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="easter-egg-footer-ink" onClick={onClose}>
+      <div className="easter-ink-ring easter-ink-ring-1" />
+      <div className="easter-ink-ring easter-ink-ring-2" />
+      <div className="easter-ink-ring easter-ink-ring-3" />
+      <p className="easter-ink-text">{text}</p>
+    </div>
+  );
+}
+
 function SearchEasterEgg({ text, onClose }: { text: string; onClose: () => void }) {
   useEffect(() => {
     const timer = setTimeout(onClose, 4000);
@@ -101,6 +119,7 @@ export default function EasterEggs() {
   const [fallingTexts, setFallingTexts] = useState<string[]>([]);
   const [konamiText, setKonamiText] = useState<string | null>(null);
   const [searchHello, setSearchHello] = useState<string | null>(null);
+  const [footerEgg, setFooterEgg] = useState(false);
   const logoClickCount = useRef(0);
   const logoClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const konamiIndex = useRef(0);
@@ -203,8 +222,15 @@ export default function EasterEggs() {
     return () => window.removeEventListener("search-easter-egg", handleSearchEasterEgg);
   }, []);
 
+  useEffect(() => {
+    const handleFooterEgg = () => setFooterEgg(true);
+    window.addEventListener("footer-logo-click", handleFooterEgg);
+    return () => window.removeEventListener("footer-logo-click", handleFooterEgg);
+  }, []);
+
   const closeKonami = useCallback(() => setKonamiText(null), []);
   const closeSearch = useCallback(() => setSearchHello(null), []);
+  const closeFooter = useCallback(() => setFooterEgg(false), []);
 
   return (
     <>
@@ -214,6 +240,7 @@ export default function EasterEggs() {
       )}
       {konamiText && <KonamiOverlay text={konamiText} onClose={closeKonami} />}
       {searchHello && <SearchEasterEgg text={searchHello} onClose={closeSearch} />}
+      {footerEgg && <FooterInkOverlay text={FOOTER_EGG_TEXT} onClose={closeFooter} />}
     </>
   );
 }

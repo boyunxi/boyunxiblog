@@ -1,4 +1,5 @@
 import PostCard from "./PostCard";
+import Reveal from "@/components/ui/Reveal";
 
 interface Post {
   id: number;
@@ -21,8 +22,10 @@ export default function PostList({ posts, emptyText, variant = "default" }: { po
   }
   return (
     <div className="space-y-4">
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} variant={variant} />
+      {posts.map((post, index) => (
+        <Reveal key={post.id} delay={Math.min(index, 8) * 80}>
+          <PostCard post={post} variant={variant} />
+        </Reveal>
       ))}
     </div>
   );
