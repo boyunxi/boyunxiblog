@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { transformPost } from "@/lib/types";
 import { notFound } from "next/navigation";
+import { decodeSlugParam } from "@/lib/utils";
 import PageShell from "@/components/ui/PageShell";
 import PageHeader from "@/components/ui/PageHeader";
 
@@ -8,8 +9,9 @@ export const dynamic = "force-dynamic";
 import PostList from "@/components/frontend/PostList";
 
 export default async function CategoryPage({ params }: { params: { name: string } }) {
+  const name = decodeSlugParam(params.name);
   const category = await prisma.category.findUnique({
-    where: { slug: params.name },
+    where: { slug: name },
     include: {
       posts: {
         where: { published: true },

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { transformPost } from "@/lib/types";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Eye, Clock } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { formatDate, decodeSlugParam } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
 import MdxRenderer from "@/lib/mdx-renderer";
@@ -21,8 +21,9 @@ function estimateReadingTime(content: string): string {
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const slug = decodeSlugParam(params.slug);
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     select: { title: true, excerpt: true, coverImage: true, slug: true },
   });
   if (!post) return {};
@@ -49,8 +50,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function PostPage({ params }: { params: { slug: string } }) {
+  const slug = decodeSlugParam(params.slug);
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: { category: true, tags: { include: { tag: true } } },
   });
 
