@@ -1,6 +1,12 @@
-export default function NavigationLoadingScreen({ label }: { label: string }) {
+export default function NavigationLoadingScreen({
+  label,
+  className = "bg-[var(--bg)]",
+}: {
+  label: string;
+  className?: string;
+}) {
   return (
-    <div className="min-h-[40vh] flex items-center justify-center bg-[var(--bg)]" role="status" aria-live="polite">
+    <div className={`min-h-[40vh] flex items-center justify-center ${className}`} role="status" aria-live="polite">
       <div className="loading-cloud-mark" aria-hidden="true">
         <span />
         <span />
