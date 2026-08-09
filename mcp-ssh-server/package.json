@@ -1,0 +1,20 @@
+{
+  "name": "mcp-ssh-server",
+  "version": "1.0.0",
+  "description": "MCP (Model Context Protocol) 服务器：通过 SSH/SCP 远程管理服务器",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "mcp-ssh-server": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
