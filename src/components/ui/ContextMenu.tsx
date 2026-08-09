@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUp, BookOpen, ChevronLeft, FolderTree } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -24,6 +24,7 @@ function announceNavigation(href: string) {
 
 export default function ContextMenu() {
   const router = useRouter();
+  const menuRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<MenuPosition | null>(null);
   const canGoBack = typeof window !== "undefined" && window.history.length > 1;
 
@@ -41,7 +42,12 @@ export default function ContextMenu() {
       setPosition({ x: Math.max(12, x), y: Math.max(12, y) });
     };
 
-    const handlePointerDown = () => close();
+    // 点击/按下发生在菜单内部时不关闭，否则点击菜单项时 pointerdown 会把
+    // 菜单从 DOM 移除，导致随后的 click 不再触发，导航功能失效。
+    const handlePointerDown = (event: PointerEvent) => {
+      if (menuRef.current && menuRef.current.contains(event.target as Node)) return;
+      close();
+    };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") close();
     };
@@ -71,10 +77,10 @@ export default function ContextMenu() {
   return (
     <div
       className="context-menu"
+      ref={menuRef}
       style={{ left: position.x, top: position.y }}
       role="menu"
       aria-label="页面导航菜单"
-      onPointerDown={(event) => event.stopPropagation()}
     >
       <div className="context-menu-label">页面导航</div>
       <button
