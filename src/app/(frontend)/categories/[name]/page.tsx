@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import PageShell from "@/components/ui/PageShell";
 import PageHeader from "@/components/ui/PageHeader";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 import PostList from "@/components/frontend/PostList";
 
 export default async function CategoryPage({ params }: { params: { name: string } }) {

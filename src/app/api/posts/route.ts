@@ -77,6 +77,12 @@ export const POST = withLog(async (request: NextRequest) => {
     revalidatePath("/tags");
     revalidatePath("/search");
 
+    // 分类/标签详情页也受影响，一并失效
+    if (post.category?.slug) revalidatePath(`/categories/${post.category.slug}`);
+    for (const t of post.tags ?? []) {
+      if (t.tag?.slug) revalidatePath(`/tags/${t.tag.slug}`);
+    }
+
     return NextResponse.json({ success: true, data: post }, { status: 201 });
   } catch (error) {
     return NextResponse.json(

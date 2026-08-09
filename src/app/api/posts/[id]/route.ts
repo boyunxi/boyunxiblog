@@ -71,6 +71,12 @@ export const PUT = withLog(async (
     revalidatePath("/tags");
     revalidatePath("/search");
 
+    // 分类/标签详情页也受影响，一并失效
+    if (post.category?.slug) revalidatePath(`/categories/${post.category.slug}`);
+    for (const t of post.tags ?? []) {
+      if (t.tag?.slug) revalidatePath(`/tags/${t.tag.slug}`);
+    }
+
     return NextResponse.json({ success: true, data: post });
   } catch (error) {
     return NextResponse.json(
@@ -97,7 +103,7 @@ export const DELETE = withLog(async (
 
     const post = await prisma.post.findUnique({
       where: { id: parseInt(params.id) },
-      select: { slug: true },
+      select: { slug: true, category: true, tags: { include: { tag: true } } },
     });
 
     await prisma.post.delete({ where: { id: parseInt(params.id) } });
@@ -108,6 +114,12 @@ export const DELETE = withLog(async (
       revalidatePath("/categories");
       revalidatePath("/tags");
       revalidatePath("/search");
+
+      // 分类/标签详情页也受影响，一并失效
+      if (post.category?.slug) revalidatePath(`/categories/${post.category.slug}`);
+      for (const t of post.tags ?? []) {
+        if (t.tag?.slug) revalidatePath(`/tags/${t.tag.slug}`);
+      }
     }
 
     return NextResponse.json({ success: true });
