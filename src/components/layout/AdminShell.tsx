@@ -36,11 +36,11 @@ export default function AdminShell({
       <AdminSidebar collapsed={collapsed} onToggle={toggleCollapsed} />
       <main
         className={`bg-ricepaper-dark min-h-screen relative overflow-hidden transition-[margin] duration-300 ${
-          mounted && collapsed ? "lg:ml-20" : "lg:ml-64"
+          mounted && collapsed ? "ml-20" : "ml-64"
         }`}
       >
         <CloudBackdrop className="opacity-35" />
-        <div className="relative z-10 p-6 lg:p-8 pt-16 lg:pt-8">{children}</div>
+        <div className="relative z-10 p-6 lg:p-8 pt-8">{children}</div>
       </main>
     </div>
   );

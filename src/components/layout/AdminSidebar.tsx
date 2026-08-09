@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -14,8 +13,6 @@ import {
   Settings,
   ExternalLink,
   LogOut,
-  Menu,
-  X,
   ScrollText,
   PanelLeftClose,
   PanelLeftOpen,
@@ -41,7 +38,6 @@ export default function AdminSidebar({
 }) {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   // 构建期注入的部署版本号（deploy.sh 传入 git 短哈希），本地开发为空
   const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || "";
@@ -51,21 +47,18 @@ export default function AdminSidebar({
     return pathname.startsWith(href);
   };
 
-  // 移动端抽屉打开时始终完整展开，折叠状态仅作用于桌面端
-  const isCollapsed = mobileOpen ? false : collapsed;
-
   const sidebarContent = (
     <div className="flex flex-col h-full">
       <div
         className={`flex items-center gap-3 border-b border-white/10 ${
-          isCollapsed ? "flex-col justify-center py-5" : "justify-between p-6"
+          collapsed ? "flex-col justify-center py-5" : "justify-between p-6"
         }`}
       >
         <div className="text-center">
           <h1 className="font-serif text-xl text-gold tracking-wide">
-            {isCollapsed ? "隙" : "博云隙"}
+            {collapsed ? "隙" : "博云隙"}
           </h1>
-          {!isCollapsed && (
+          {!collapsed && (
             <p className="text-ricepaper/60 text-xs mt-1 tracking-wide">
               内容管理
             </p>
@@ -73,11 +66,11 @@ export default function AdminSidebar({
         </div>
         <button
           onClick={onToggle}
-          title={isCollapsed ? "展开侧栏" : "收起侧栏"}
-          aria-label={isCollapsed ? "展开侧栏" : "收起侧栏"}
-          className="hidden lg:flex items-center justify-center w-8 h-8 rounded text-ricepaper/60 hover:text-gold hover:bg-white/10 transition-colors"
+          title={collapsed ? "展开侧栏" : "收起侧栏"}
+          aria-label={collapsed ? "展开侧栏" : "收起侧栏"}
+          className="flex items-center justify-center w-8 h-8 rounded text-ricepaper/60 hover:text-gold hover:bg-white/10 transition-colors"
         >
-          {isCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
         </button>
       </div>
 
@@ -89,53 +82,52 @@ export default function AdminSidebar({
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => setMobileOpen(false)}
-              title={isCollapsed ? item.label : undefined}
+              title={collapsed ? item.label : undefined}
               className={`flex items-center min-h-11 text-sm transition-colors ${
-                isCollapsed ? "justify-center px-0" : "gap-3 px-6"
+                collapsed ? "justify-center px-0" : "gap-3 px-6"
               } ${
                 active
-                  ? isCollapsed
+                  ? collapsed
                     ? "bg-ink/80 text-gold"
                     : "bg-ink/80 text-gold border-l-4 border-gold"
                   : "text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper border-l-4 border-transparent"
               }`}
             >
               <Icon size={18} />
-              {!isCollapsed && <span>{item.label}</span>}
+              {!collapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
       <div className="border-t border-ink/30 py-4">
-        {session?.user && !isCollapsed && (
+        {session?.user && !collapsed && (
           <div className="px-6 py-2 text-xs text-ricepaper/50 truncate">
             {session.user.email}
           </div>
         )}
         <Link
           href="/"
-          title={isCollapsed ? "返回前台" : undefined}
+          title={collapsed ? "返回前台" : undefined}
           className={`flex items-center min-h-11 text-sm text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper transition-colors ${
-            isCollapsed ? "justify-center px-0" : "gap-3 px-6"
+            collapsed ? "justify-center px-0" : "gap-3 px-6"
           }`}
         >
           <ExternalLink size={18} />
-          {!isCollapsed && <span>返回前台</span>}
+          {!collapsed && <span>返回前台</span>}
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          title={isCollapsed ? "退出登录" : undefined}
+          title={collapsed ? "退出登录" : undefined}
           className={`flex items-center min-h-11 text-sm text-ricepaper/70 hover:bg-ink/50 hover:text-ricepaper transition-colors w-full ${
-            isCollapsed ? "justify-center px-0" : "gap-3 px-6"
+            collapsed ? "justify-center px-0" : "gap-3 px-6"
           }`}
         >
           <LogOut size={18} />
-          {!isCollapsed && <span>退出登录</span>}
+          {!collapsed && <span>退出登录</span>}
         </button>
 
-        {!isCollapsed && APP_VERSION && (
+        {!collapsed && APP_VERSION && (
           <div className="px-6 pt-3 text-[10px] text-ricepaper/30 tracking-wider">
             构建 {APP_VERSION}
           </div>
@@ -145,34 +137,12 @@ export default function AdminSidebar({
   );
 
   return (
-    <>
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed top-4 left-4 z-40 lg:hidden bg-ink text-ricepaper p-2 rounded-md shadow-lg"
-      >
-        <Menu size={20} />
-      </button>
-
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      <aside
-        className={`fixed top-0 left-0 h-full bg-ink text-ricepaper z-50 transform transition-all duration-300 lg:translate-x-0 ${
-          isCollapsed ? "w-20" : "w-64"
-        } ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        <button
-          onClick={() => setMobileOpen(false)}
-          className="absolute top-4 right-4 lg:hidden text-ricepaper/60 hover:text-ricepaper"
-        >
-          <X size={20} />
-        </button>
-        {sidebarContent}
-      </aside>
-    </>
+    <aside
+      className={`fixed top-0 left-0 h-full bg-ink text-ricepaper z-50 transition-all duration-300 ${
+        collapsed ? "w-20" : "w-64"
+      }`}
+    >
+      {sidebarContent}
+    </aside>
   );
 }
