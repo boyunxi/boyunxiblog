@@ -56,3 +56,22 @@ export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength) + "...";
 }
+
+/**
+ * 解码动态路由参数中的 URL 编码（如 %E6%BD%AE%E6%B1%95 → 潮汕）。
+ *
+ * Next.js 14 中页面路由（page.tsx）的 params 不做 URL 解码，
+ * 而 API 路由会自动解码，导致含非 ASCII 字符（中文）的 slug 在页面路由中
+ * 查不到记录而 404。此函数安全地处理两种情况：
+ * - 未编码：原样返回（decodeURIComponent 对无 % 的字符串是幂等的）
+ * - 已编码：解码为原始字符
+ * - 非法编码：捕获异常后返回原值
+ */
+export function decodeSlugParam(value: string): string {
+  if (!value || !value.includes("%")) return value;
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
