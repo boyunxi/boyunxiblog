@@ -6,6 +6,7 @@ services:
         NEXT_PUBLIC_SITE_URL: https://boyunxi.cn
         NEXTAUTH_URL: https://boyunxi.cn
         IMAGES_REMOTE_HOSTS: ${IMAGES_REMOTE_HOSTS:-boyunxi.cn}
+        GIT_COMMIT: ${GIT_COMMIT:-dev}
     container_name: boyunxiblog
     ports:
       - "127.0.0.1:3000:3000"

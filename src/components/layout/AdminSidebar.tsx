@@ -43,6 +43,9 @@ export default function AdminSidebar({
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // 构建期注入的部署版本号（deploy.sh 传入 git 短哈希），本地开发为空
+  const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || "";
+
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
     return pathname.startsWith(href);
@@ -131,6 +134,12 @@ export default function AdminSidebar({
           <LogOut size={18} />
           {!isCollapsed && <span>退出登录</span>}
         </button>
+
+        {!isCollapsed && APP_VERSION && (
+          <div className="px-6 pt-3 text-[10px] text-ricepaper/30 tracking-wider">
+            构建 {APP_VERSION}
+          </div>
+        )}
       </div>
     </div>
   );

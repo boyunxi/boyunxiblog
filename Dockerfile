@@ -14,10 +14,13 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ARG NEXT_PUBLIC_SITE_URL=https://boyunxi.cn
 ARG NEXTAUTH_URL=https://boyunxi.cn
+ARG GIT_COMMIT=dev
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV SKIP_ENV_VALIDATION=1
 ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 ENV NEXTAUTH_URL=${NEXTAUTH_URL}
+# 部署版本号（由 deploy.sh 传入 git 短哈希），构建期内联到客户端
+ENV NEXT_PUBLIC_APP_VERSION=${GIT_COMMIT}
 RUN npx prisma generate && \
     npm run build
 

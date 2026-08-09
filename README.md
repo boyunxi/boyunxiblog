@@ -589,19 +589,33 @@ export const GET = withLog(async (request, context) => {
 > 2. 更新 `DATABASE_URL` 为 PostgreSQL 连接字符串
 > 3. 运行 `npx prisma db push`
 
-### Docker 部署
+### Docker Compose 部署（自托管推荐）
 
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npx prisma generate
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
+项目附带 `docker-compose.yml`（博客 + MinIO 对象存储），`Dockerfile` 使用多阶段构建并已做安全加固（非 root 运行、健康检查）。
+
+```bash
+# 1. 克隆并准备环境变量（.env 含 NEXTAUTH_SECRET、MINIO_ACCESS_KEY/SECRET_KEY 等）
+git clone https://github.com/boyunxi/boyunxiblog.git
+cd boyunxiblog
+cp .env.example .env   # 若有模板；否则按 docker-compose.yml 中 :? 必填项手动创建
+nano .env
+
+# 2. 首次部署
+docker compose up -d --build
 ```
+
+### 版本更新（deploy.sh）
+
+服务器已部署后，更新到新版本用根目录的 `deploy.sh` 一键完成：
+
+```bash
+./deploy.sh              # 更新到远程 main 最新版
+./deploy.sh v1.0.0       # 切换到指定 tag / 分支 / commit 并部署
+```
+
+脚本流程：拉取代码 → 构建镜像（注入 git 短哈希为版本号）→ 重启容器 → 健康检查 → 清理旧镜像。
+
+登录后台后，**侧边栏底部会显示当前部署版本号**（如 `构建 a1b2c3d`），用于确认更新已生效。
 
 ### 自托管 / VPS
 
