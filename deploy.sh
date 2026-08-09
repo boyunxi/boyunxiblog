@@ -14,6 +14,9 @@ set -e
 REF="${1:-origin/main}"
 APP_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# GitHub 直连（部分服务器配置了本地代理但代理未运行，会导致 TLS 握手失败）
+GIT="git -c http.proxy= -c https.proxy="
+
 cd "$APP_DIR"
 
 echo "=============================================="
@@ -23,14 +26,14 @@ echo "  目标: $REF"
 echo "=============================================="
 
 # 1. 拉取代码
-git fetch origin
+$GIT fetch origin
 if [ "$REF" = "origin/main" ]; then
   echo "==> 更新到远程 main 最新版..."
-  git checkout main 2>/dev/null || git checkout -B main origin/main
-  git pull --ff-only origin main
+  $GIT checkout main 2>/dev/null || $GIT checkout -B main origin/main
+  $GIT pull --ff-only origin main
 else
   echo "==> 切换到指定版本: $REF"
-  git checkout "$REF"
+  $GIT checkout "$REF"
 fi
 
 # 2. 版本号 = git commit 短哈希 + 最近 tag（若有）
