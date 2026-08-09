@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
+import { signOut } from "next-auth/react";
 import AdminPageHeader from "@/components/ui/AdminPageHeader";
 import AdminButton from "@/components/ui/AdminButton";
 import AdminCard from "@/components/ui/AdminCard";
@@ -75,6 +76,13 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // 修改密码表单
+  const [pwCurrent, setPwCurrent] = useState("");
+  const [pwNew, setPwNew] = useState("");
+  const [pwConfirm, setPwConfirm] = useState("");
+  const [pwMsg, setPwMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [pwSaving, setPwSaving] = useState(false);
+
   useEffect(() => {
     fetch("/api/settings")
       .then((res) => res.json())
@@ -105,6 +113,45 @@ export default function SettingsPage() {
     } catch {
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    setPwMsg(null);
+    if (!pwCurrent || !pwNew) {
+      setPwMsg({ type: "error", text: "请输入当前密码与新密码" });
+      return;
+    }
+    if (pwNew.length < 8) {
+      setPwMsg({ type: "error", text: "新密码至少 8 位" });
+      return;
+    }
+    if (pwNew !== pwConfirm) {
+      setPwMsg({ type: "error", text: "两次输入的新密码不一致" });
+      return;
+    }
+
+    setPwSaving(true);
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword: pwCurrent, newPassword: pwNew }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPwMsg({ type: "success", text: "密码已修改，即将重新登录" });
+        setPwCurrent("");
+        setPwNew("");
+        setPwConfirm("");
+        setTimeout(() => signOut({ callbackUrl: "/admin/login" }), 1500);
+      } else {
+        setPwMsg({ type: "error", text: data.error || "修改失败" });
+      }
+    } catch {
+      setPwMsg({ type: "error", text: "修改失败，请稍后重试" });
+    } finally {
+      setPwSaving(false);
     }
   };
 
@@ -309,6 +356,38 @@ export default function SettingsPage() {
               <input type="text" value={settings.easterEggSearchHello} onChange={(e) => updateField("easterEggSearchHello", e.target.value)} className={inputClass} placeholder="你好，有缘人！既然寻到了此处，便留下吧。" />
             </div>
           </div>
+        </div>
+      </AdminCard>
+
+      <AdminCard>
+        <h2 className="font-serif text-ink text-lg border-b border-ink/10 pb-3 flex items-center gap-2">
+          <span>账号安全</span>
+          <span className="text-xs text-inkGray/40 font-sans">Account</span>
+        </h2>
+        <p className="text-inkGray/60 text-sm">修改管理员登录密码，修改后需重新登录。</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div>
+            <label className={labelClass}>当前密码</label>
+            <input type="password" value={pwCurrent} onChange={(e) => setPwCurrent(e.target.value)} className={inputClass} autoComplete="current-password" />
+          </div>
+          <div>
+            <label className={labelClass}>新密码</label>
+            <input type="password" value={pwNew} onChange={(e) => setPwNew(e.target.value)} className={inputClass} placeholder="至少 8 位" autoComplete="new-password" />
+          </div>
+          <div>
+            <label className={labelClass}>确认新密码</label>
+            <input type="password" value={pwConfirm} onChange={(e) => setPwConfirm(e.target.value)} className={inputClass} autoComplete="new-password" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <AdminButton onClick={handleChangePassword} disabled={pwSaving}>
+            {pwSaving ? "修改中..." : "修改密码"}
+          </AdminButton>
+          {pwMsg && (
+            <span className={`text-sm ${pwMsg.type === "success" ? "text-jade" : "text-cinnabar"}`}>
+              {pwMsg.text}
+            </span>
+          )}
         </div>
       </AdminCard>
 
