@@ -5,7 +5,7 @@ import PostCard from "@/components/frontend/PostCard";
 import EmptyState from "@/components/ui/EmptyState";
 import Reveal from "@/components/ui/Reveal";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [posts, categories, settings] = await Promise.all([

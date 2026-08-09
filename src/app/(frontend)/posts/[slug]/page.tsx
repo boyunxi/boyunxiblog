@@ -12,15 +12,7 @@ import LikeButton from "@/components/frontend/LikeButton";
 import ArticleReveal from "@/components/ui/ArticleReveal";
 
 export const dynamicParams = true;
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    select: { slug: true },
-  });
-  return posts.map((post) => ({ slug: post.slug }));
-}
+export const dynamic = "force-dynamic";
 
 function estimateReadingTime(content: string): string {
   const text = content.replace(/<[^>]*>/g, "").replace(/[#*`\[\]()]/g, "");
