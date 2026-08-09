@@ -35,27 +35,16 @@ function getIp(req: NextRequest): string {
   );
 }
 
-function getCsp(nonce?: string): string {
-  // 开发环境放宽：HMR 需要 unsafe-eval；不加 upgrade-insecure-requests 以免本地资源被强制升级
-  if (process.env.NODE_ENV !== "production") {
-    return [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https:",
-      "font-src 'self' data:",
-      "connect-src 'self'",
-      "media-src 'self'",
-      "object-src 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "frame-ancestors 'self'",
-    ].join("; ");
-  }
-  // 生产：Next 内联 RSC 脚本用每请求 nonce；shiki/React 内联样式必须 unsafe-inline
-  return [
+// 注意：Next.js 14.x 不支持 x-nonce 自动应用到内联 RSC 脚本，
+// 因此 script-src 必须包含 'unsafe-inline' 才能让 hydration 脚本执行。
+// 站点无第三方脚本，'self' 已限制外部脚本源，配合其余指令整体风险可控。
+function getCsp(): string {
+  const isProd = process.env.NODE_ENV === "production";
+  const directives = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}'`,
+    isProd
+      ? "script-src 'self' 'unsafe-inline'"
+      : "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
@@ -67,12 +56,13 @@ function getCsp(nonce?: string): string {
     "frame-ancestors 'self'",
     "frame-src 'none'",
     "worker-src 'self' blob:",
-    "upgrade-insecure-requests",
-  ].join("; ");
+  ];
+  if (isProd) directives.push("upgrade-insecure-requests");
+  return directives.join("; ");
 }
 
-function withSecurityHeaders(response: NextResponse, nonce?: string): NextResponse {
-  response.headers.set("Content-Security-Policy", getCsp(nonce));
+function withSecurityHeaders(response: NextResponse): NextResponse {
+  response.headers.set("Content-Security-Policy", getCsp());
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -99,25 +89,24 @@ export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const ua = req.headers.get("user-agent") || "";
   const ip = getIp(req);
-  const nonce = crypto.randomUUID();
 
-  if (isBadBot(ua)) return withSecurityHeaders(block404(), nonce);
+  if (isBadBot(ua)) return withSecurityHeaders(block404());
 
   if (isGoodCrawler(ua)) {
     if (!rateLimit(`c:${ip}`, 5, 10_000) || !rateLimit(`cs:${ip}`, 20, 60_000)) {
-      return withSecurityHeaders(block404(), nonce);
+      return withSecurityHeaders(block404());
     }
   } else if (path.startsWith("/api/auth/callback") || path.startsWith("/api/auth/signin")) {
     if (!rateLimit(`a:${ip}`, 5, 10_000) || !rateLimit(`as:${ip}`, 10, 60_000)) {
-      return withSecurityHeaders(tooManyRequests(), nonce);
+      return withSecurityHeaders(tooManyRequests());
     }
   } else if (path.startsWith("/api/")) {
     if (!rateLimit(`api:${ip}`, 30, 10_000) || !rateLimit(`apis:${ip}`, 120, 60_000)) {
-      return withSecurityHeaders(tooManyRequests(), nonce);
+      return withSecurityHeaders(tooManyRequests());
     }
   } else {
     if (!rateLimit(`p:${ip}`, 20, 10_000) || !rateLimit(`ps:${ip}`, 120, 60_000)) {
-      return withSecurityHeaders(block404(), nonce);
+      return withSecurityHeaders(block404());
     }
   }
 
@@ -133,7 +122,7 @@ export async function middleware(req: NextRequest) {
         [process.env.NEXT_PUBLIC_SITE_URL, process.env.NEXTAUTH_URL].filter(Boolean)
       );
       if (!allowed.has(origin)) {
-        return withSecurityHeaders(new NextResponse("Forbidden", { status: 403 }), nonce);
+        return withSecurityHeaders(new NextResponse("Forbidden", { status: 403 }));
       }
     }
   }
@@ -141,18 +130,11 @@ export async function middleware(req: NextRequest) {
   if ((path === "/admin" || path.startsWith("/admin/")) && path !== "/admin/login") {
     const token = await getToken({ req });
     if (!token) {
-      return withSecurityHeaders(NextResponse.redirect(new URL("/admin/login", req.url)), nonce);
+      return withSecurityHeaders(NextResponse.redirect(new URL("/admin/login", req.url)));
     }
   }
 
-  // 生产环境为 Next 内联脚本注入 nonce 请求头（Next 会自动应用到脚本上）
-  const response = NextResponse.next();
-  if (process.env.NODE_ENV === "production") {
-    const requestHeaders = new Headers(req.headers);
-    requestHeaders.set("x-nonce", nonce);
-    return withSecurityHeaders(NextResponse.next({ request: { headers: requestHeaders } }), nonce);
-  }
-  return withSecurityHeaders(response, nonce);
+  return withSecurityHeaders(NextResponse.next());
 }
 
 export const config = {
