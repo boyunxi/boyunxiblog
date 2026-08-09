@@ -14,8 +14,8 @@ set -e
 REF="${1:-origin/main}"
 APP_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# GitHub 直连（部分服务器配置了本地代理但代理未运行，会导致 TLS 握手失败）
-GIT="git -c http.proxy= -c https.proxy="
+# GitHub 直连 + HTTP/1.1（部分服务器本地代理未运行或 HTTP/2 被干扰，会导致 TLS 握手失败）
+GIT="git -c http.proxy= -c https.proxy= -c http.version=HTTP/1.1"
 
 cd "$APP_DIR"
 
