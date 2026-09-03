@@ -4,7 +4,7 @@ import { withLog } from "@/lib/with-log";
 import { getClientIp } from "@/lib/client-ip";
 
 function getIp(req: NextRequest): string {
-  return getClientIp(req.headers, req.ip);
+  return getClientIp(req.headers);
 }
 
 export const GET = withLog(async (

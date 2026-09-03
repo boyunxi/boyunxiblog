@@ -5,7 +5,7 @@ import { getClientIp } from "./client-ip";
 type AnyContext = Record<string, any>;
 
 function extractIp(req: NextRequest): string {
-  return getClientIp(req.headers, req.ip);
+  return getClientIp(req.headers);
 }
 
 function inferCategory(pathname: string): string {

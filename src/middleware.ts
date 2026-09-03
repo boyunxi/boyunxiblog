@@ -30,7 +30,7 @@ function isGoodCrawler(ua: string): boolean {
 
 /** @see src/lib/client-ip.ts —— IP 解析的安全约定集中在该文件 */
 function getIp(req: NextRequest): string {
-  return getClientIp(req.headers, req.ip);
+  return getClientIp(req.headers);
 }
 
 // 注意：Next.js 14.x 不支持 x-nonce 自动应用到内联 RSC 脚本，

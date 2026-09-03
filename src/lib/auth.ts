@@ -12,7 +12,7 @@ import { getClientIp } from "./client-ip";
  * 解析规则统一收敛在 ./client-ip。
  */
 function extractIp(req: any): string {
-  return getClientIp(req?.headers, req?.ip);
+  return getClientIp(req?.headers);
 }
 
 export const authOptions: NextAuthOptions = {

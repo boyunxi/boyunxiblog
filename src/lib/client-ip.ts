@@ -50,11 +50,9 @@ function readHeader(source: HeaderLike, name: string): string | undefined {
  * 取客户端 IP。
  *
  * @param headers 请求头来源（Headers / NextRequest.headers / 普通对象）
- * @param fallback 连接层地址（如 NextRequest.ip）。未启用 TRUST_PROXY 时使用。
  */
 export function getClientIp(
-  headers: HeaderLike | null | undefined,
-  fallback?: string
+  headers: HeaderLike | null | undefined
 ): string {
   if (TRUST_FORWARDED && headers) {
     const realIp = readHeader(headers, "x-real-ip")?.trim();
@@ -68,5 +66,5 @@ export function getClientIp(
     }
   }
 
-  return fallback || "unknown";
+  return "unknown";
 }

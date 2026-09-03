@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
 import { logger } from "@/lib/logger";
+import { getClientIp } from "@/lib/client-ip";
 
 export const GET = withLog(async (request: NextRequest) => {
   try {
@@ -32,7 +33,7 @@ export const GET = withLog(async (request: NextRequest) => {
       action: "search",
       message: `搜索: "${q}" 找到 ${posts.length} 篇`,
       meta: { query: q, results: posts.length },
-      ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown",
+      ip: getClientIp(request.headers),
     });
 
     return NextResponse.json({ success: true, data: posts });

@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ip = getClientIp(request.headers, request.ip);
+    const ip = getClientIp(request.headers);
 
     void logger.info({
       category: "view",

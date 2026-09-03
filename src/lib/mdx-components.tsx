@@ -3,7 +3,9 @@ import Link from "next/link";
 import { CustomPre } from "./code-block";
 
 function CustomImage({ src, alt }: React.ImgHTMLAttributes<HTMLImageElement>) {
-  if (!src) return null;
+  // @types/react 19 把 src 拓宽成 string | Blob。MDX 正文只会给字符串，
+  // 收窄后 startsWith 与 next/image 的 src 才都成立。
+  if (!src || typeof src !== "string") return null;
   if (src.startsWith("http")) {
     return (
       <span className="block my-8">
