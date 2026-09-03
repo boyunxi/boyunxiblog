@@ -32,6 +32,14 @@ const nextConfig = {
     ];
   },
 
+  // minio 是 CJS/ESM 双模，靠 browser-or-node 在运行时嗅探环境，Turbopack
+  // 默认会把它打进 server chunk。这里保持外置，等同升级前 webpack 的行为：
+  // 本地没有 MinIO 实例，无法验证打包后的运行时分支，而图片上传/删除一旦
+  // 走错分支就是硬故障。
+  // ip2region 不需要列在这里 —— 已实测其 data/*.db 被产物追踪正常带出，
+  // geo 解析在 standalone 下可用。
+  serverExternalPackages: ["minio"],
+
   // 注意：不要开启 compiler.removeConsole。
   // src/components/EasterEggs.tsx 用 console.log 输出「控制台欢迎语」彩蛋
   // （由后台设置项 easterEggConsoleEnabled 控制，带金色样式），

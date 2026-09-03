@@ -83,6 +83,20 @@ function tooManyRequests() {
   return res;
 }
 
+/**
+ * Next 16 把 middleware 文件约定改名为 proxy（构建时会打印弃用警告）。
+ *
+ * 这里刻意不改名：proxy 的运行时固定为 nodejs 且不可配置，而 middleware 仍跑在
+ * edge sandbox。本文件承载全站最敏感的一段逻辑 —— 恶意 bot 拦截、四档限流、
+ * /admin* 门禁、每个响应上的安全头 —— 而 rateLimit 的模块级 Map 的身份取决于
+ * 由哪个 bundle 实例化它。把「切换运行时」和「框架大版本跳版」塞进同一次改动，
+ * 一旦出问题无法二分定位；那里静默失效的后果是后台公开或限流全关。
+ *
+ * 等升级沉淀后作为独立改动再做，并单独跑一轮限流分桶与门禁验证。
+ * 也不要用 `npx @next/codemod middleware-to-proxy` 顺手改：它会一并重写下面的
+ * export const config 与那个排除 _next/static、_next/image、favicon.ico、
+ * icon.svg、images/ 的 matcher 正则。
+ */
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const ua = req.headers.get("user-agent") || "";

@@ -54,7 +54,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN" style={localFontStack}>
+    // data-scroll-behavior: Next 16 起不再在客户端路由切换时临时抑制 smooth，
+    // 该属性把它显式打开，避免每次导航从旧滚动位置一路平滑滑到新页顶部。
+    <html lang="zh-CN" data-scroll-behavior="smooth" style={localFontStack}>
       <body className="bg-void min-h-screen">{children}</body>
     </html>
   );

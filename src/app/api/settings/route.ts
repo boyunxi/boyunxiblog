@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 export const GET = withLog(async () => {
   try {
-    let settings = await prisma.siteSetting.findFirst({
+    const settings = await prisma.siteSetting.findFirst({
       where: { id: 1 },
     });
 
