@@ -8,3 +8,16 @@ prisma/dev.db-journal
 NUL
 screenshot-*.png
 screenshots/
+
+# 构建产物
+*.tsbuildinfo
+next-env.d.ts
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# AI / agent 工具的本地状态
+.workbuddy-ai/
