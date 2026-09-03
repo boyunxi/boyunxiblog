@@ -1,21 +1,49 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 
 const prisma = new PrismaClient();
 
+/**
+ * 管理员初始口令不再硬编码。
+ *
+ * 明文口令一旦提交进版本库就是永久泄露 —— 本仓库已推送到远程，
+ * 任何人都能从历史里翻出它直接登录后台。因此：
+ *   · 优先读环境变量 ADMIN_INITIAL_PASSWORD；
+ *   · 未设置则生成随机口令，并在初始化时打印一次。
+ *
+ * 注意 upsert 的 update 是空对象：已存在的管理员密码不会被覆盖，
+ * 所以重跑 seed 不会把你改过的密码重置回去。
+ */
 async function main() {
-  const hashedPassword = await bcrypt.hash("zip1314521", 10);
+  const adminEmail = process.env.ADMIN_EMAIL || "boyunxioo";
+  let initialPassword = process.env.ADMIN_INITIAL_PASSWORD;
+  const generated = !initialPassword;
+  if (generated) {
+    initialPassword = randomBytes(12).toString("base64url");
+  }
+
+  const hashedPassword = await bcrypt.hash(initialPassword as string, 12);
 
   await prisma.user.upsert({
-    where: { email: "boyunxioo" },
+    where: { email: adminEmail },
     update: {},
     create: {
-      email: "boyunxioo",
+      email: adminEmail,
       password: hashedPassword,
       name: "管理员",
       role: "admin",
     },
   });
+
+  if (generated) {
+    console.log("========================================");
+    console.log("管理员账号已创建（随机口令仅显示这一次）：");
+    console.log(`  账号: ${adminEmail}`);
+    console.log(`  口令: ${initialPassword}`);
+    console.log("请立即登录后修改，并妥善保存。");
+    console.log("========================================");
+  }
 
   await prisma.siteSetting.upsert({
     where: { id: 1 },

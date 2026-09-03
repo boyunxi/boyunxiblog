@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
+const { randomBytes } = require("crypto");
 
 const prisma = new PrismaClient();
 
@@ -10,16 +11,34 @@ async function main() {
     return;
   }
 
-  const hashedPassword = await bcrypt.hash("zip1314521", 10);
+  // 初始口令不硬编码：明文口令一旦进版本库就是永久泄露。
+  // 优先读 ADMIN_INITIAL_PASSWORD，未设置则生成随机口令并打印一次。
+  const adminEmail = process.env.ADMIN_EMAIL || "boyunxioo";
+  let initialPassword = process.env.ADMIN_INITIAL_PASSWORD;
+  const generated = !initialPassword;
+  if (generated) {
+    initialPassword = randomBytes(12).toString("base64url");
+  }
+
+  const hashedPassword = await bcrypt.hash(initialPassword, 12);
 
   await prisma.user.create({
     data: {
-      email: "boyunxioo",
+      email: adminEmail,
       password: hashedPassword,
       name: "管理员",
       role: "admin",
     },
   });
+
+  if (generated) {
+    console.log("========================================");
+    console.log("管理员账号已创建（随机口令仅显示这一次）：");
+    console.log(`  账号: ${adminEmail}`);
+    console.log(`  口令: ${initialPassword}`);
+    console.log("请立即登录后修改，并妥善保存。");
+    console.log("========================================");
+  }
 
   await prisma.siteSetting.create({
     data: {

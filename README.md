@@ -230,13 +230,13 @@ cd boyunxiblog
 npm install
 
 # 3. 配置环境变量
-cp .env .env.local
-# 编辑 .env.local，至少填写 NEXTAUTH_SECRET
+#    .env 已在 .gitignore 中，请勿提交到版本库
+openssl rand -base64 32     # 用它生成 NEXTAUTH_SECRET 填入 .env
 
 # 4. 初始化数据库
 npx prisma generate
 npx prisma db push
-npx prisma db seed
+npx prisma db seed          # 管理员账号在此创建
 
 # 5. 启动开发服务器
 npm run dev
@@ -244,8 +244,18 @@ npm run dev
 # 6. 访问
 # 前台：http://localhost:3000
 # 后台：http://localhost:3000/admin
-# 默认账号：admin@blog.com / admin123
 ```
+
+> **管理员初始口令**
+>
+> 没有"默认密码"这种东西 —— 明文口令一旦进版本库就是永久泄露。
+> `prisma db seed` 会按以下规则创建管理员：
+>
+> - 设置了 `ADMIN_INITIAL_PASSWORD` → 用它作为口令；
+> - 未设置 → 生成随机口令，并在 seed 输出中**只打印这一次**，请立即保存。
+>
+> 账号名可用 `ADMIN_EMAIL` 指定（默认 `boyunxioo`）。
+> 重跑 seed 不会覆盖已存在的管理员密码，可放心重复执行。
 
 ### 构建生产版本
 
@@ -266,12 +276,35 @@ npm start
 | `NEXTAUTH_SECRET` | 是 | NextAuth JWT 签名密钥 | `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | 否 | 站点 URL（生产环境必填） | `https://yourdomain.com` |
 | `NEXT_PUBLIC_SITE_URL` | 否 | 公开站点 URL | `https://yourdomain.com` |
+| `TRUST_PROXY` | 生产必填 | 是否信任反向代理传入的 `X-Real-IP` / `X-Forwarded-For` | `true` |
+| `MINIO_ENDPOINT` | 否 | 对象存储地址（图片上传） | `minio` |
+| `MINIO_PORT` | 否 | 对象存储端口 | `9000` |
+| `MINIO_ACCESS_KEY` | 否 | 对象存储访问密钥 | - |
+| `MINIO_SECRET_KEY` | 否 | 对象存储私有密钥 | - |
+| `MINIO_BUCKET` | 否 | 对象存储桶名 | `blog-images` |
+| `MINIO_PUBLIC_URL` | 否 | 图片对外访问前缀 | `https://yourdomain.com/images` |
+| `ADMIN_EMAIL` | 否 | `db seed` 创建的管理员账号名 | `boyunxioo` |
+| `ADMIN_INITIAL_PASSWORD` | 否 | 管理员初始口令；**不设则随机生成并打印一次** | - |
 
 生成 `NEXTAUTH_SECRET`：
 
 ```bash
 openssl rand -base64 32
 ```
+
+> **关于 `TRUST_PROXY`（重要）**
+>
+> 客户端可以任意伪造 `X-Forwarded-For`。若无条件信任它，攻击者每请求换一个
+> IP 就能让限流与登录锁定彻底失效。因此 IP 解析规则如下（见 `src/lib/client-ip.ts`）：
+>
+> - `TRUST_PROXY=true`：只信任 `X-Real-IP`，其次是 `X-Forwarded-For` 的**链尾**
+>   （链首是客户端自己填的，链尾才是最近一个代理追加的）。
+> - 未设置：忽略所有转发头，回落到连接层地址。
+>
+> **部署在 nginx 之后时必须设为 `true`**，否则点赞接口会因取不到 IP 而返回 400，
+> 且限流会退化成所有访客共用一个桶。
+> `nginx.conf` 中的 `proxy_set_header X-Real-IP $remote_addr` 是覆盖语义，
+> 客户端自带的那份会被替换掉，这正是可信的来源。
 
 ---
 
@@ -629,12 +662,24 @@ npx prisma db push
 npx prisma db seed
 npm run build
 
+# 注意：next.config.js 开启了 output: "standalone"，
+# 此时 `npm start`（next start）不适用，会告警并可能拿不到静态资源。
+# standalone 产物需先补齐静态文件，再用 node 直接启动：
+cp -r public .next/standalone/
+mkdir -p .next/standalone/.next && cp -r .next/static .next/standalone/.next/
+cp -r prisma .next/standalone/
+
+node .next/standalone/server.js
+
 # 使用 PM2 守护进程
 npm install -g pm2
-pm2 start npm --name "boyunxiblog" -- start
+pm2 start .next/standalone/server.js --name "boyunxiblog"
 pm2 save
 pm2 startup
 ```
+
+> 若确实想用 `next start`，请先在 `next.config.js` 中移除 `output: "standalone"`。
+> 两种模式不可混用。
 
 ---
 

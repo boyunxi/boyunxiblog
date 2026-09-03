@@ -14,6 +14,10 @@ services:
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:?NEXTAUTH_SECRET is required}
       - NEXTAUTH_URL=${NEXTAUTH_URL:-https://boyunxi.cn}
       - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://boyunxi.cn}
+      # blog 只监听 127.0.0.1，真实链路必经反向代理（见 nginx.conf），
+      # 因此信任其设置的 X-Real-IP。不开启则点赞会取不到 IP 而报 400，
+      # 且限流/登录锁定会退化成所有访客共用一个桶。
+      - TRUST_PROXY=true
       - DATABASE_URL=file:/app/prisma/dev.db
       - MINIO_ENDPOINT=${MINIO_ENDPOINT:-minio}
       - MINIO_PORT=${MINIO_PORT:-9000}
