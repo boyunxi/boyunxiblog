@@ -1,4 +1,6 @@
-FROM node:20-slim AS base
+# node:20-slim 虽然满足 Next 16 的 >=20.9.0，但 Node 20 已于 2026-04-30 EOL、
+# 不再收安全补丁，而这是公网暴露的容器。openssl 保留：slim 镜像里 Prisma 需要它。
+FROM node:22-slim AS base
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 FROM base AS deps

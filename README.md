@@ -215,7 +215,7 @@ d:\blog
 
 ### 环境要求
 
-- **Node.js** >= 18.0
+- **Node.js** >= 20.9（Next.js 16 的最低要求；Node 18 已不被支持。推荐 22 LTS，与 Dockerfile 一致）
 - **npm** >= 9.0（或 pnpm / yarn）
 - **Git**
 
@@ -624,7 +624,7 @@ export const GET = withLog(async (request, context) => {
 
 ### Docker Compose 部署（自托管推荐）
 
-项目附带 `docker-compose.yml`（博客 + MinIO 对象存储），`Dockerfile` 使用多阶段构建并已做安全加固（非 root 运行、健康检查）。
+项目附带 `docker-compose.yml`（博客 + MinIO 对象存储），`Dockerfile` 使用多阶段构建并已做安全加固（非 root 运行、健康检查），基础镜像为 Node 22 LTS（Node 20 已 EOL、公网容器应跟进受支持版本）。
 
 ```bash
 # 1. 克隆并准备环境变量（.env 含 NEXTAUTH_SECRET、MINIO_ACCESS_KEY/SECRET_KEY 等）
