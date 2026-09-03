@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withLog } from "@/lib/with-log";
+import { getClientIp } from "@/lib/client-ip";
 
 function getIp(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || req.headers.get("x-real-ip")
-    || "unknown";
+  return getClientIp(req.headers, req.ip);
 }
 
 export const GET = withLog(async (

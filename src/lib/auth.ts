@@ -4,13 +4,15 @@ import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import { logger } from "./logger";
 import { checkLockout, recordFail, recordSuccess } from "./login-guard";
+import { getClientIp } from "./client-ip";
 
+/**
+ * 登录锁定所依赖的 IP。
+ * 这里尤其不能被伪造 —— 否则攻击者换个头就能无限次试密码。
+ * 解析规则统一收敛在 ./client-ip。
+ */
 function extractIp(req: any): string {
-  if (!req?.headers) return "unknown";
-  const h = req.headers;
-  const xff = typeof h.get === "function" ? h.get("x-forwarded-for") : (h["x-forwarded-for"] || h["X-Forwarded-For"]);
-  const xri = typeof h.get === "function" ? h.get("x-real-ip") : (h["x-real-ip"] || h["X-Real-Ip"]);
-  return (typeof xff === "string" ? xff.split(",")[0]?.trim() : xff) || xri || "unknown";
+  return getClientIp(req?.headers, req?.ip);
 }
 
 export const authOptions: NextAuthOptions = {

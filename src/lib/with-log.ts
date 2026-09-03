@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "./logger";
+import { getClientIp } from "./client-ip";
 
 type AnyContext = Record<string, any>;
 
 function extractIp(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || req.headers.get("x-real-ip")
-    || "unknown";
+  return getClientIp(req.headers, req.ip);
 }
 
 function inferCategory(pathname: string): string {

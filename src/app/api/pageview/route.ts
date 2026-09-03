@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
+import { getClientIp } from "@/lib/client-ip";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,9 +14,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-      || request.headers.get("x-real-ip")
-      || "unknown";
+    const ip = getClientIp(request.headers, request.ip);
 
     void logger.info({
       category: "view",

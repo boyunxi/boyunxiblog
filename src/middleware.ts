@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/client-ip";
 
 const BAD_BOTS = [
   /semrush/i, /ahrefs/i, /mj12bot/i, /dotbot/i, /rogerbot/i,
@@ -27,12 +28,9 @@ function isGoodCrawler(ua: string): boolean {
   return GOOD_CRAWLERS.some((p) => p.test(ua));
 }
 
+/** @see src/lib/client-ip.ts —— IP 解析的安全约定集中在该文件 */
 function getIp(req: NextRequest): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
-  );
+  return getClientIp(req.headers, req.ip);
 }
 
 // 注意：Next.js 14.x 不支持 x-nonce 自动应用到内联 RSC 脚本，
