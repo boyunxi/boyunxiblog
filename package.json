@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
-    "dev:webpack": "next dev",
+    "dev": "next dev -H 127.0.0.1",
+    "dev:webpack": "next dev --webpack -H 127.0.0.1",
     "build": "next build",
     "start": "next start",
     "start:standalone": "node .next/standalone/server.js",
