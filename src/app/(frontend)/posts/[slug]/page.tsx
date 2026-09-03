@@ -20,8 +20,9 @@ function estimateReadingTime(content: string): string {
   return `${minutes} 分钟`;
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const slug = decodeSlugParam(params.slug);
+export async function generateMetadata(props: PageProps<"/posts/[slug]">): Promise<Metadata> {
+  const { slug: rawSlug } = await props.params;
+  const slug = decodeSlugParam(rawSlug);
   const post = await prisma.post.findUnique({
     where: { slug },
     select: { title: true, excerpt: true, coverImage: true, slug: true },
@@ -49,8 +50,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-  const slug = decodeSlugParam(params.slug);
+export default async function PostPage(props: PageProps<"/posts/[slug]">) {
+  const { slug: rawSlug } = await props.params;
+  const slug = decodeSlugParam(rawSlug);
   const post = await prisma.post.findUnique({
     where: { slug },
     include: { category: true, tags: { include: { tag: true } } },

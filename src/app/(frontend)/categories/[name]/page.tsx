@@ -4,14 +4,14 @@ import { notFound } from "next/navigation";
 import { decodeSlugParam } from "@/lib/utils";
 import PageShell from "@/components/ui/PageShell";
 import PageHeader from "@/components/ui/PageHeader";
-
-export const dynamic = "force-dynamic";
 import PostList from "@/components/frontend/PostList";
 
-export default async function CategoryPage({ params }: { params: { name: string } }) {
-  const name = decodeSlugParam(params.name);
+export const dynamic = "force-dynamic";
+
+export default async function CategoryPage(props: PageProps<"/categories/[name]">) {
+  const { name } = await props.params;
   const category = await prisma.category.findUnique({
-    where: { slug: name },
+    where: { slug: decodeSlugParam(name) },
     include: {
       posts: {
         where: { published: true },

@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 
 export const PUT = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/tags/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const { generateSlug } = await import("@/lib/utils");
@@ -24,7 +25,7 @@ export const PUT = withLog(async (
     const slug = generateSlug(name);
 
     const tag = await prisma.tag.update({
-      where: { id: parseInt(params.id) },
+      where: { id },
       data: { name, slug },
     });
 
@@ -43,9 +44,10 @@ export const PUT = withLog(async (
 
 export const DELETE = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/tags/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
@@ -57,11 +59,11 @@ export const DELETE = withLog(async (
     }
 
     const tag = await prisma.tag.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id },
       select: { slug: true },
     });
 
-    await prisma.tag.delete({ where: { id: parseInt(params.id) } });
+    await prisma.tag.delete({ where: { id } });
 
     if (tag) {
       revalidatePath("/");

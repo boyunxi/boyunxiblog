@@ -9,9 +9,9 @@ function getIp(req: NextRequest): string {
 
 export const GET = withLog(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/posts/[id]/like">
 ) => {
-  const postId = parseInt(params.id);
+  const postId = parseInt((await ctx.params).id, 10);
   const ip = getIp(request);
 
   const [likesCount, liked] = await Promise.all([
@@ -29,9 +29,9 @@ export const GET = withLog(async (
 
 export const POST = withLog(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/posts/[id]/like">
 ) => {
-  const postId = parseInt(params.id);
+  const postId = parseInt((await ctx.params).id, 10);
   const ip = getIp(request);
 
   if (ip === "unknown") {

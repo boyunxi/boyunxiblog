@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 
 export const PUT = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/categories/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
@@ -22,7 +23,7 @@ export const PUT = withLog(async (
     const { name, slug } = body;
 
     const category = await prisma.category.update({
-      where: { id: parseInt(params.id) },
+      where: { id },
       data: { name, slug },
     });
 
@@ -41,9 +42,10 @@ export const PUT = withLog(async (
 
 export const DELETE = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/categories/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
@@ -55,16 +57,16 @@ export const DELETE = withLog(async (
     }
 
     const category = await prisma.category.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id },
       select: { slug: true },
     });
 
     await prisma.post.updateMany({
-      where: { categoryId: parseInt(params.id) },
+      where: { categoryId: id },
       data: { categoryId: null },
     });
 
-    await prisma.category.delete({ where: { id: parseInt(params.id) } });
+    await prisma.category.delete({ where: { id } });
 
     if (category) {
       revalidatePath("/");

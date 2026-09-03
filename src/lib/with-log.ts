@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { logger } from "./logger";
 import { getClientIp } from "./client-ip";
 
-type AnyContext = Record<string, any>;
+/**
+ * Next 16 起 route handler 的 context.params 是 Promise。
+ *
+ * 约束成 Promise<unknown> 而不是具体形状：漏掉 await 的同步标注
+ * （{ params: { id: string } }）会在 withLog 调用处直接编译失败，
+ * 而不是退化成 parseInt(undefined) → NaN → Prisma 返回 null 的静默 404。
+ * 具体的 params 类型由 handler 自己的 RouteContext<'/api/...'> 提供。
+ */
+type RouteContextLike = { params: Promise<unknown> };
 
 function extractIp(req: NextRequest): string {
   return getClientIp(req.headers);
@@ -20,9 +28,9 @@ function inferCategory(pathname: string): string {
   return "api";
 }
 
-export function withLog<T extends AnyContext = AnyContext>(
-  handler: (request: NextRequest, context: T) => Promise<NextResponse>
-): (request: NextRequest, context: T) => Promise<NextResponse> {
+export function withLog<C extends RouteContextLike = RouteContextLike>(
+  handler: (request: NextRequest, context: C) => Promise<NextResponse>
+): (request: NextRequest, context: C) => Promise<NextResponse> {
   return async (request, context) => {
     const start = Date.now();
     const { pathname } = new URL(request.url);

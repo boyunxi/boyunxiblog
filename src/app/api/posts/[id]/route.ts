@@ -5,11 +5,12 @@ import { revalidatePath } from "next/cache";
 
 export const GET = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/posts/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const post = await prisma.post.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id },
       include: { category: true, tags: { include: { tag: true } } },
     });
 
@@ -31,9 +32,10 @@ export const GET = withLog(async (
 
 export const PUT = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/posts/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
@@ -48,7 +50,7 @@ export const PUT = withLog(async (
     const { title, slug, content, excerpt, coverImage, published, categoryId, tagIds } = body;
 
     const post = await prisma.post.update({
-      where: { id: parseInt(params.id) },
+      where: { id },
       data: {
         title,
         slug,
@@ -88,9 +90,10 @@ export const PUT = withLog(async (
 
 export const DELETE = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/posts/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
@@ -102,11 +105,11 @@ export const DELETE = withLog(async (
     }
 
     const post = await prisma.post.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id },
       select: { slug: true, category: true, tags: { include: { tag: true } } },
     });
 
-    await prisma.post.delete({ where: { id: parseInt(params.id) } });
+    await prisma.post.delete({ where: { id } });
 
     if (post) {
       revalidatePath("/");

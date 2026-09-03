@@ -5,10 +5,11 @@ import { withLog } from "@/lib/with-log";
 
 export const GET = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/images/[id]">
 ) => {
   try {
-    const image = await prisma.image.findUnique({ where: { id: parseInt(params.id) } });
+    const id = parseInt((await ctx.params).id, 10);
+    const image = await prisma.image.findUnique({ where: { id } });
     if (!image) {
       return NextResponse.json({ success: false, error: "Image not found" }, { status: 404 });
     }
@@ -20,9 +21,10 @@ export const GET = withLog(async (
 
 export const PUT = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/images/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
@@ -37,7 +39,7 @@ export const PUT = withLog(async (
     }
 
     const image = await prisma.image.update({
-      where: { id: parseInt(params.id) },
+      where: { id },
       data: { name: name.trim() },
     });
 
@@ -49,9 +51,10 @@ export const PUT = withLog(async (
 
 export const DELETE = withLog(async (
   request,
-  { params }: { params: { id: string } }
+  ctx: RouteContext<"/api/images/[id]">
 ) => {
   try {
+    const id = parseInt((await ctx.params).id, 10);
     const { getServerSession } = await import("next-auth");
     const { authOptions } = await import("@/lib/auth");
     const session = await getServerSession(authOptions);
@@ -59,7 +62,7 @@ export const DELETE = withLog(async (
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const image = await prisma.image.findUnique({ where: { id: parseInt(params.id) } });
+    const image = await prisma.image.findUnique({ where: { id } });
     if (!image) {
       return NextResponse.json({ success: false, error: "Image not found" }, { status: 404 });
     }
@@ -72,7 +75,7 @@ export const DELETE = withLog(async (
       // ignore if file doesn't exist in minio
     }
 
-    await prisma.image.delete({ where: { id: parseInt(params.id) } });
+    await prisma.image.delete({ where: { id } });
 
     return NextResponse.json({ success: true });
   } catch (error) {

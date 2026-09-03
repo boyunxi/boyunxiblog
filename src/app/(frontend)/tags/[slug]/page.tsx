@@ -4,14 +4,14 @@ import { notFound } from "next/navigation";
 import { decodeSlugParam } from "@/lib/utils";
 import PageShell from "@/components/ui/PageShell";
 import PageHeader from "@/components/ui/PageHeader";
-
-export const dynamic = "force-dynamic";
 import PostList from "@/components/frontend/PostList";
 
-export default async function TagPage({ params }: { params: { slug: string } }) {
-  const slug = decodeSlugParam(params.slug);
+export const dynamic = "force-dynamic";
+
+export default async function TagPage(props: PageProps<"/tags/[slug]">) {
+  const { slug: rawSlug } = await props.params;
   const tag = await prisma.tag.findUnique({
-    where: { slug },
+    where: { slug: decodeSlugParam(rawSlug) },
     include: {
       posts: {
         where: { post: { published: true } },
