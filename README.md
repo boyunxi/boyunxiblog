@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-14.2-000?logo=nextdotjs" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Next.js-16.3-000?logo=nextdotjs" alt="Next.js" />
   <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Prisma-5.22-2D3748?logo=prisma" alt="Prisma" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?logo=tailwindcss" alt="Tailwind CSS" />
@@ -43,7 +43,7 @@
 
 **薄云隙** 是一个以「古风水墨」为视觉基调的个人博客系统，融合了东方古典美学与现代 Web 技术。前端采用暗色「云海裂隙」风格，管理后台采用「宣纸墨韵」风格，两者在视觉上形成鲜明对比又和谐统一。
 
-项目基于 Next.js 14 App Router 构建，使用 Server Components 优先策略，搭配 Prisma ORM + SQLite 实现轻量级数据持久化，零外部数据库依赖，开箱即用。
+项目基于 Next.js 16 App Router 构建，使用 Server Components 优先策略，搭配 Prisma ORM + SQLite 实现轻量级数据持久化，零外部数据库依赖，开箱即用。
 
 ---
 
@@ -92,18 +92,17 @@
 
 | 类别 | 技术 | 版本 |
 |------|------|------|
-| 框架 | [Next.js](https://nextjs.org/) (App Router) | 14.2 |
+| 框架 | [Next.js](https://nextjs.org/) (App Router) | 16.3 |
 | 语言 | [TypeScript](https://www.typescriptlang.org/) | 5.0+ |
 | ORM | [Prisma](https://www.prisma.io/) | 5.22 |
 | 数据库 | [SQLite](https://www.sqlite.org/) | 内置 |
 | 认证 | [NextAuth.js](https://next-auth.js.org/) | 4.24 |
 | 样式 | [Tailwind CSS](https://tailwindcss.com/) | 3.4 |
-| 字体 | Noto Serif SC / Noto Sans SC / JetBrains Mono | Google Fonts |
+| 字体 | 本地系统字体栈（各平台自带中文衬线/黑体 + 等宽，**不加载远程 Google Fonts**） | 本地 |
 | MDX | [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote) | 6.0 |
 | 代码高亮 | [Shiki](https://shiki.style/) + [rehype-pretty-code](https://github.com/rehype-pretty/rehype-pretty-code) | 4.0 / 0.14 |
 | 密码加密 | [bcryptjs](https://github.com/dcodeIO/bcrypt.js) | 2.4 |
 | 图标 | [Lucide React](https://lucide.dev/) | 0.453 |
-| 校验 | [Zod](https://zod.dev/) | 3.23 |
 
 ---
 
