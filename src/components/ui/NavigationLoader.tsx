@@ -1,15 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function NavigationLoader() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+
+  // 依赖里必须含 query：只改 searchParams 的导航（/search?q=a → ?q=b、
+  // /admin/posts?page=2）pathname 不变，只依赖 pathname 会让进度条点亮后
+  // 再也不熄灭。取字符串而非对象，避免对象标识变化带来多余触发。
+  const search = searchParams.toString();
 
   useEffect(() => {
     setLoading(false);
-  }, [pathname]);
+  }, [pathname, search]);
 
   useEffect(() => {
     const start = () => setLoading(true);

@@ -26,7 +26,7 @@ export default function ContextMenu() {
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<MenuPosition | null>(null);
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
+  const [canGoBack, setCanGoBack] = useState(false);
 
   const close = useCallback(() => setPosition(null), []);
 
@@ -39,6 +39,9 @@ export default function ContextMenu() {
       const menuHeight = 220;
       const x = Math.min(event.clientX, window.innerWidth - menuWidth - 12);
       const y = Math.min(event.clientY, window.innerHeight - menuHeight - 12);
+      // 在事件里读 history.length 而不是渲染期：渲染期访问 window 对 SSR 不纯，
+      // 且打开菜单那一刻的历史深度才是这一项要表达的语义。
+      setCanGoBack(window.history.length > 1);
       setPosition({ x: Math.max(12, x), y: Math.max(12, y) });
     };
 
