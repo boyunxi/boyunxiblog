@@ -4,12 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { withLog } from "@/lib/with-log";
 import { checkLockout, recordFail, recordSuccess } from "@/lib/login-guard";
+import { getClientIp } from "@/lib/client-ip";
 
 export const POST = withLog(async (request: NextRequest) => {
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
+  const ip = getClientIp(request.headers);
 
   try {
     const { getServerSession } = await import("next-auth");

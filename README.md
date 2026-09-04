@@ -257,6 +257,27 @@ npm run dev
 > 账号名可用 `ADMIN_EMAIL` 指定（默认 `boyunxioo`）。
 > 重跑 seed 不会覆盖已存在的管理员密码，可放心重复执行。
 
+### 管理员口令轮换（含历史泄露处置）
+
+早期版本的 seed 曾把管理员口令**明文写死并提交进仓库**，因此凡是当时用默认 seed 初始化过的环境（尤其是线上），其口令都应视为**已泄露**——即便现在代码里已不再硬编码，历史里那条口令仍可被翻出。请对这类环境**立即轮换口令**：
+
+- 能用旧口令登录时：进入 **后台 → 设置 → 修改密码**（需当前密码，新密码至少 8 位）。
+- 无法/不愿用旧口令登录时，用脚本在数据库层直接重置：
+
+```bash
+# 本地
+npm run db:reset-admin                 # 未设 NEW_ADMIN_PASSWORD 时随机生成并打印一次
+NEW_ADMIN_PASSWORD='你的新口令' npm run db:reset-admin
+
+# 容器（线上）
+docker compose exec -T blog node prisma/reset-admin-password.js
+NEW_ADMIN_PASSWORD='你的新口令' docker compose exec -T blog node prisma/reset-admin-password.js
+```
+
+脚本只更新 `ADMIN_EMAIL`（默认 `boyunxioo`）账号的 password 字段，不动其它数据。
+
+> 若要彻底清除 Git 历史里的明文口令，需 `git filter-repo`（或 BFG）重写历史后对受保护分支强推——这是破坏性操作，会作废他人本地与部署依赖的历史，请单独评估、单独授权后再做。**注意：清历史不能替代轮换线上口令**，两者都要做。
+
 ### 构建生产版本
 
 ```bash
