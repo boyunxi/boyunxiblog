@@ -36,7 +36,8 @@ export default defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // prisma/seed.js 是 seed.ts 的编译产物，由 entrypoint.sh 直接执行
+    // prisma/seed.js 是与 seed.ts 并行维护的第二份种子，由 entrypoint.sh 用纯 node 执行；
+    // 忽略以避免 CommonJS 写法在 TS 规则集下产生噪音
     "prisma/seed.js",
     ".workbuddy-ai/**",
   ]),
